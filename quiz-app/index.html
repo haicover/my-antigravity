@@ -89,7 +89,27 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               <span>Play Again</span>
            </button>
+           <button id="btnReview" class="btn-secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Review Answers</span>
+           </button>
         </div>
+      </div>
+    </section>
+
+    <!-- Screen 4: Review -->
+    <section id="reviewScreen" class="screen">
+      <header class="quiz-header">
+        <h2 class="result-title" style="margin-bottom: 0;">Review Answers</h2>
+      </header>
+      <div id="reviewContainer" class="review-container">
+        <!-- Review cards injected by JS -->
+      </div>
+      <div class="result-actions" style="margin-top: 24px; justify-content: center;">
+         <button id="btnBackToResult" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span>Back to Results</span>
+         </button>
       </div>
     </section>
 

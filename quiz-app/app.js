@@ -4,16 +4,20 @@ let score = 0;
 let timeLeft = 60;
 let timerId = null;
 let isAnswered = false;
+let userAnswers = []; // To store user answer path
 
 // DOM Elements
 const screens = {
   start: document.getElementById('startScreen'),
   quiz: document.getElementById('quizScreen'),
-  result: document.getElementById('resultScreen')
+  result: document.getElementById('resultScreen'),
+  review: document.getElementById('reviewScreen')
 };
 
 const btnStart = document.getElementById('btnStart');
 const btnPlayAgain = document.getElementById('btnPlayAgain');
+const btnReview = document.getElementById('btnReview');
+const btnBackToResult = document.getElementById('btnBackToResult');
 
 const questionCountDisplay = document.getElementById('questionCount');
 const scoreDisplay = document.getElementById('scoreDisplay');
@@ -26,9 +30,13 @@ const scoreRing = document.getElementById('scoreRing');
 const finalScore = document.getElementById('finalScore');
 const resultMessage = document.getElementById('resultMessage');
 
+const reviewContainer = document.getElementById('reviewContainer');
+
 // Event Listeners
 btnStart.addEventListener('click', startQuiz);
 btnPlayAgain.addEventListener('click', resetQuiz);
+btnReview.addEventListener('click', showReviewScreen);
+btnBackToResult.addEventListener('click', () => showScreen('result'));
 
 // Functions
 function showScreen(screenKey) {
@@ -39,6 +47,7 @@ function showScreen(screenKey) {
 function startQuiz() {
   score = 0;
   currentQuestionIndex = 0;
+  userAnswers = [];
   showScreen('quiz');
   loadQuestion();
 }
@@ -107,6 +116,13 @@ function handleTimeout() {
   const buttons = optionsContainer.querySelectorAll('.option-btn');
   buttons[correctIndex].classList.add('correct');
   
+  userAnswers.push({
+    questionIndex: currentQuestionIndex,
+    selectedIndex: null,
+    isCorrect: false,
+    timedOut: true
+  });
+  
   disableAllOptions();
   
   // Wait then go next
@@ -130,6 +146,13 @@ function selectAnswer(selectedIndex, selectedBtn) {
     selectedBtn.classList.add('incorrect');
     buttons[correctIndex].classList.add('correct');
   }
+  
+  userAnswers.push({
+    questionIndex: currentQuestionIndex,
+    selectedIndex: selectedIndex,
+    isCorrect: selectedIndex === correctIndex,
+    timedOut: false
+  });
   
   scoreDisplay.textContent = score;
   
@@ -183,4 +206,47 @@ function resetQuiz() {
   scoreRing.style.strokeDashoffset = 440;
   scoreRing.style.stroke = "var(--primary)";
   startQuiz();
+}
+
+function showReviewScreen() {
+  showScreen('review');
+  reviewContainer.innerHTML = '';
+  
+  userAnswers.forEach(answerObj => {
+    const qData = quizQuestions[answerObj.questionIndex];
+    
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    
+    // Check if it was a timeout
+    let selectionStateText = '';
+    if (answerObj.timedOut) {
+      selectionStateText = '<span style="color:var(--incorrect); font-size: 0.85rem; margin-bottom: 8px; display:inline-block">⏱ Time Out (-1 pt)</span>';
+    }
+    
+    item.innerHTML = `
+      ${selectionStateText}
+      <h3 class="review-question">${answerObj.questionIndex + 1}. ${qData.question}</h3>
+      <div class="review-options">
+        ${qData.options.map((opt, i) => {
+          let cssClass = 'review-option';
+          let icon = '';
+          
+          if (i === qData.answer) {
+             cssClass += ' correct';
+             icon = '<span class="review-option-icon">✓</span>';
+          } else if (i === answerObj.selectedIndex) {
+             cssClass += ' incorrect';
+             icon = '<span class="review-option-icon">✗</span>';
+          }
+          
+          return `<div class="${cssClass}">
+            <span>${opt}</span>
+            ${icon}
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+    reviewContainer.appendChild(item);
+  });
 }

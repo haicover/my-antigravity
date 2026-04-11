@@ -183,6 +183,32 @@ body {
   transform: translateY(1px);
 }
 
+.btn-secondary {
+  background: var(--glass);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  padding: 16px 32px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(1px);
+}
+
 /* Quiz Screen */
 .quiz-header {
   display: flex;
@@ -392,6 +418,87 @@ body {
   color: var(--text-muted);
   margin-bottom: 40px;
   font-size: 1.1rem;
+}
+
+.result-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Review Screen */
+.review-container {
+  overflow-y: auto;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-right: 8px;
+  width: 100%;
+  text-align: left;
+}
+
+.review-container::-webkit-scrollbar {
+  width: 6px;
+}
+.review-container::-webkit-scrollbar-track {
+  background: var(--glass);
+  border-radius: 10px;
+}
+.review-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.review-item {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.review-question {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-main);
+}
+
+.review-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.review-option {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-option.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--correct);
+  color: #fff;
+}
+
+.review-option.incorrect {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: var(--incorrect);
+  color: #fff;
+}
+
+.review-option-icon {
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 @media (max-width: 600px) {
