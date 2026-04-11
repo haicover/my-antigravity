@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================
+  Evaluation Dataset — Quantitative Reasoning
+  Version  : 1.1.0
+  Created  : 2026-03-29
+  Purpose  : Benchmark AI model performance on multi-domain
+             numerical calculations (finance, physics,
+             geometry, statistics, chemistry).
+  Scoring  : Exact match on rounded numeric answer.
+  ============================================================
+-->
+
+<evaluation
+  version="1.1.0"
+  created="2026-03-29"
+  domain="quantitative_reasoning"
+  total_questions="5">
+
+  <!-- ════════════════════════════════════════════════
+       METADATA
+  ════════════════════════════════════════════════════ -->
+  <metadata>
+    <title>Quantitative Reasoning Evaluation Set</title>
+    <description>
+      Multi-domain numerical calculation questions covering compound
+      interest, projectile motion, solid geometry, descriptive
+      statistics, and solution chemistry. Each answer is a single
+      numeric value rounded to 2 decimal places.
+    </description>
+    <categories>
+      <category id="FIN">Finance</category>
+      <category id="PHY">Physics</category>
+      <category id="GEO">Geometry</category>
+      <category id="STA">Statistics</category>
+      <category id="CHE">Chemistry</category>
+    </categories>
+    <difficulty_levels>
+      <level id="easy">Straightforward formula application</level>
+      <level id="medium">Multi-step calculation required</level>
+      <level id="hard">Derived quantity or chained formulas</level>
+    </difficulty_levels>
+    <scoring>
+      <method>exact_match</method>
+      <precision>2 decimal places</precision>
+      <partial_credit>false</partial_credit>
+    </scoring>
+  </metadata>
+
+  <!-- ════════════════════════════════════════════════
+       QUESTIONS
+  ════════════════════════════════════════════════════ -->
+  <qa_pairs>
+
+    <!-- ── Question 1: Finance ─────────────────────── -->
+    <qa_pair
+      id="Q001"
+      category="FIN"
+      difficulty="medium">
+
+      <question>
+        Calculate the compound interest on $10,000 invested at 5% annual
+        interest rate, compounded monthly for 3 years.
+        What is the final amount in dollars (rounded to 2 decimal places)?
+      </question>
+
+      <answer unit="USD">11614.72</answer>
+
+      <hints>
+        <hint>Formula: A = P × (1 + r/n)^(n×t)</hint>
+        <hint>P = 10000, r = 0.05, n = 12, t = 3</hint>
+      </hints>
+
+      <solution_steps>
+        <step order="1">Monthly rate = 0.05 / 12 = 0.004167</step>
+        <step order="2">Total periods = 12 × 3 = 36</step>
+        <step order="3">A = 10000 × (1.004167)^36</step>
+        <step order="4">A ≈ 11614.72</step>
+      </solution_steps>
+
+    </qa_pair>
+
+    <!-- ── Question 2: Physics ─────────────────────── -->
+    <qa_pair
+      id="Q002"
+      category="PHY"
+      difficulty="hard">
+
+      <question>
+        A projectile is launched at a 45-degree angle with an initial
+        velocity of 50 m/s. Calculate the total distance (in meters)
+        it has traveled from the launch point after 2 seconds,
+        assuming g = 9.8 m/s². Round to 2 decimal places.
+      </question>
+
+      <answer unit="m">87.25</answer>
+
+      <hints>
+        <hint>Resolve initial velocity into horizontal and vertical components</hint>
+        <hint>vx = v₀ cos(45°), vy = v₀ sin(45°)</hint>
+        <hint>Horizontal: x = vx × t</hint>
+        <hint>Vertical: y = vy × t − ½ g t²</hint>
+        <hint>Total distance = √(x² + y²)</hint>
+      </hints>
+
+      <solution_steps>
+        <step order="1">vx = vy = 50 × cos(45°) ≈ 35.355 m/s</step>
+        <step order="2">x = 35.355 × 2 = 70.711 m</step>
+        <step order="3">y = 35.355 × 2 − 0.5 × 9.8 × 4 = 70.711 − 19.6 = 51.111 m</step>
+        <step order="4">distance = √(70.711² + 51.111²) ≈ 87.25 m</step>
+      </solution_steps>
+
+    </qa_pair>
+
+    <!-- ── Question 3: Geometry ────────────────────── -->
+    <qa_pair
+      id="Q003"
+      category="GEO"
+      difficulty="medium">
+
+      <question>
+        A sphere has a volume of 500 cubic meters.
+        Calculate its surface area in square meters.
+        Round to 2 decimal places.
+      </question>
+
+      <answer unit="m²">304.65</answer>
+
+      <hints>
+        <hint>Volume of sphere: V = (4/3) π r³  →  solve for r first</hint>
+        <hint>Surface area: A = 4 π r²</hint>
+      </hints>
+
+      <solution_steps>
+        <step order="1">r³ = (3 × 500) / (4π) = 119.366</step>
+        <step order="2">r = ∛119.366 ≈ 4.924 m</step>
+        <step order="3">A = 4 × π × (4.924)² ≈ 304.65 m²</step>
+      </solution_steps>
+
+    </qa_pair>
+
+    <!-- ── Question 4: Statistics ──────────────────── -->
+    <qa_pair
+      id="Q004"
+      category="STA"
+      difficulty="medium">
+
+      <question>
+        Calculate the population standard deviation of this dataset:
+        [12, 15, 18, 22, 25, 30, 35].
+        Round to 2 decimal places.
+      </question>
+
+      <answer unit="none">7.61</answer>
+
+      <dataset>
+        <value>12</value>
+        <value>15</value>
+        <value>18</value>
+        <value>22</value>
+        <value>25</value>
+        <value>30</value>
+        <value>35</value>
+      </dataset>
+
+      <hints>
+        <hint>Population std dev (σ), NOT sample std dev — divide by N, not N−1</hint>
+        <hint>σ = √[ Σ(xᵢ − μ)² / N ]</hint>
+      </hints>
+
+      <solution_steps>
+        <step order="1">N = 7, mean μ = (12+15+18+22+25+30+35) / 7 = 157 / 7 ≈ 22.43</step>
+        <step order="2">Σ(xᵢ − μ)² = 110.0² + ... = 405.71 (sum of squared deviations)</step>
+        <step order="3">Variance σ² = 405.71 / 7 ≈ 57.96</step>
+        <step order="4">σ = √57.96 ≈ 7.61</step>
+      </solution_steps>
+
+    </qa_pair>
+
+    <!-- ── Question 5: Chemistry ───────────────────── -->
+    <qa_pair
+      id="Q005"
+      category="CHE"
+      difficulty="easy">
+
+      <question>
+        Calculate the pH of a solution with a hydrogen ion concentration
+        of 3.5 × 10⁻⁵ M.
+        Round to 2 decimal places.
+      </question>
+
+      <answer unit="pH">4.46</answer>
+
+      <hints>
+        <hint>pH = −log₁₀([H⁺])</hint>
+        <hint>[H⁺] = 3.5 × 10⁻⁵</hint>
+      </hints>
+
+      <solution_steps>
+        <step order="1">pH = −log₁₀(3.5 × 10⁻⁵)</step>
+        <step order="2">pH = −(log₁₀(3.5) + log₁₀(10⁻⁵))</step>
+        <step order="3">pH = −(0.5441 − 5) = 4.4559</step>
+        <step order="4">pH ≈ 4.46</step>
+      </solution_steps>
+
+    </qa_pair>
+
+  </qa_pairs>
+
+  <!-- ════════════════════════════════════════════════
+       SUMMARY
+  ════════════════════════════════════════════════════ -->
+  <summary>
+    <total>5</total>
+    <by_category>
+      <count category="FIN">1</count>
+      <count category="PHY">1</count>
+      <count category="GEO">1</count>
+      <count category="STA">1</count>
+      <count category="CHE">1</count>
+    </by_category>
+    <by_difficulty>
+      <count difficulty="easy">1</count>
+      <count difficulty="medium">3</count>
+      <count difficulty="hard">1</count>
+    </by_difficulty>
+  </summary>
+
+</evaluation>

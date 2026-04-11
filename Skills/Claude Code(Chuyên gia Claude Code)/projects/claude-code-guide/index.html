@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code Mastery — Step-by-Step Guide 2026</title>
+  <meta name="description" content="The definitive step-by-step roadmap to becoming a Claude Code expert in 2026. Master vibe coding, agentic workflows, CLAUDE.md, hooks, subagents, MCP, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════
+       CSS CUSTOM PROPERTIES
+    ═══════════════════════════════════════════ */
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a2e;
+      --bg-card-hover: #222240;
+      --bg-glass: rgba(26, 26, 46, 0.6);
+      --text-primary: #e8e8f0;
+      --text-secondary: #9898b0;
+      --text-muted: #6a6a82;
+      --accent-gold: #f5c518;
+      --accent-gold-dim: rgba(245, 197, 24, 0.15);
+      --accent-gold-glow: rgba(245, 197, 24, 0.3);
+      --accent-blue: #5b8def;
+      --accent-blue-dim: rgba(91, 141, 239, 0.15);
+      --accent-purple: #a78bfa;
+      --accent-purple-dim: rgba(167, 139, 250, 0.12);
+      --accent-green: #34d399;
+      --accent-green-dim: rgba(52, 211, 153, 0.12);
+      --accent-rose: #fb7185;
+      --accent-rose-dim: rgba(251, 113, 133, 0.12);
+      --accent-cyan: #22d3ee;
+      --accent-cyan-dim: rgba(34, 211, 238, 0.12);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-card: rgba(255, 255, 255, 0.08);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.3);
+      --shadow-glow: 0 0 30px rgba(245, 197, 24, 0.08);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-gold-dim) var(--bg-primary);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-gold-dim); border-radius: 3px; }
+
+    a { color: var(--accent-blue); text-decoration: none; transition: color var(--transition-fast); }
+    a:hover { color: var(--accent-gold); }
+
+    /* ═══════════════════════════════════════════
+       ANIMATED BACKGROUND
+    ═══════════════════════════════════════════ */
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(245,197,24,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,197,24,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridDrift 20s linear infinite;
+    }
+    @keyframes gridDrift {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(60px,60px); }
+    }
+
+    .bg-orb {
+      position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
+    }
+    .bg-orb--gold { width: 600px; height: 600px; background: rgba(245,197,24,0.06); top: -200px; right: -200px; animation: orbFloat 15s ease-in-out infinite; }
+    .bg-orb--blue { width: 500px; height: 500px; background: rgba(91,141,239,0.05); bottom: -100px; left: -150px; animation: orbFloat 18s ease-in-out infinite reverse; }
+    .bg-orb--purple { width: 400px; height: 400px; background: rgba(167,139,250,0.04); top: 50%; left: 50%; animation: orbFloat 22s ease-in-out infinite 3s; }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(40px, -30px) scale(1.05); }
+      66% { transform: translate(-30px, 20px) scale(0.95); }
+    }
+
+    /* ═══════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════ */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ═══════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px) saturate(1.5);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: all var(--transition-smooth);
+    }
+    .nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.4); }
+    .nav__inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+    }
+    .nav__brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 1.1rem; color: var(--text-primary);
+    }
+    .nav__brand-icon {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent-gold), #e8a800);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; color: #000; font-weight: 800;
+    }
+    .nav__links { display: flex; gap: 6px; list-style: none; }
+    .nav__links a {
+      padding: 6px 14px; border-radius: var(--radius-sm);
+      font-size: 0.82rem; font-weight: 500; color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .nav__links a:hover, .nav__links a.active {
+      background: var(--accent-gold-dim); color: var(--accent-gold);
+    }
+    .nav__progress {
+      position: absolute; bottom: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent-gold), var(--accent-blue));
+      transition: width 0.1s linear; width: 0;
+    }
+
+    /* Mobile nav */
+    .nav__toggle { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 1.4rem; }
+    @media (max-width: 768px) {
+      .nav__toggle { display: block; }
+      .nav__links {
+        position: fixed; top: 64px; left: 0; right: 0;
+        background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(20px);
+        flex-direction: column; padding: 16px;
+        transform: translateY(-100%); opacity: 0; pointer-events: none;
+        transition: all var(--transition-smooth);
+      }
+      .nav__links.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+      .nav__links a { padding: 12px 16px; font-size: 0.95rem; }
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero__badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-gold-dim); border: 1px solid rgba(245,197,24,0.2);
+      padding: 6px 16px; border-radius: 40px;
+      font-size: 0.78rem; font-weight: 600; color: var(--accent-gold);
+      margin-bottom: 24px; letter-spacing: 0.5px; text-transform: uppercase;
+      animation: fadeInUp 0.8s ease both;
+    }
+    .hero__badge span { font-size: 0.9rem; }
+    .hero__title {
+      font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 900;
+      line-height: 1.1; margin-bottom: 20px; letter-spacing: -1.5px;
+      animation: fadeInUp 0.8s ease 0.15s both;
+    }
+    .hero__title .gradient-text {
+      background: linear-gradient(135deg, var(--accent-gold), #ffd700, var(--accent-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero__subtitle {
+      font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-secondary);
+      max-width: 640px; margin: 0 auto 36px; line-height: 1.8; font-weight: 400;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+    .hero__actions {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.45s both;
+    }
+    .btn {
+      padding: 12px 28px; border-radius: var(--radius-md); font-weight: 600;
+      font-size: 0.9rem; cursor: pointer; border: none;
+      transition: all var(--transition-fast); display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn--primary {
+      background: linear-gradient(135deg, var(--accent-gold), #e8a800);
+      color: #000; box-shadow: 0 4px 20px rgba(245,197,24,0.25);
+    }
+    .btn--primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,197,24,0.35); color: #000; }
+    .btn--ghost {
+      background: var(--bg-card); color: var(--text-primary);
+      border: 1px solid var(--border-card);
+    }
+    .btn--ghost:hover { border-color: var(--accent-gold); color: var(--accent-gold); transform: translateY(-2px); }
+
+    .hero__stats {
+      display: flex; gap: 40px; justify-content: center; margin-top: 60px;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+    .hero__stat { text-align: center; }
+    .hero__stat-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-gold); }
+    .hero__stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════════
+       SECTION COMMON
+    ═══════════════════════════════════════════ */
+    .section { padding: 100px 0; }
+    .section__eyebrow {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--accent-gold); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section__eyebrow::before {
+      content: ''; width: 24px; height: 2px;
+      background: linear-gradient(90deg, var(--accent-gold), transparent);
+    }
+    .section__title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800;
+      letter-spacing: -0.8px; margin-bottom: 16px; line-height: 1.2;
+    }
+    .section__desc {
+      font-size: 1.05rem; color: var(--text-secondary); max-width: 650px;
+      margin-bottom: 48px; line-height: 1.8;
+    }
+
+    /* ═══════════════════════════════════════════
+       TIMELINE
+    ═══════════════════════════════════════════ */
+    .timeline { position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 28px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(180deg, var(--accent-gold), var(--accent-blue), var(--accent-purple), var(--accent-green), var(--accent-rose), var(--accent-cyan));
+      border-radius: 2px;
+    }
+    @media (max-width: 600px) { .timeline::before { left: 18px; } }
+
+    /* ═══════════════════════════════════════════
+       PHASE CARD
+    ═══════════════════════════════════════════ */
+    .phase {
+      position: relative; padding-left: 76px; margin-bottom: 64px;
+      opacity: 0; transform: translateY(40px);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .phase.visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 600px) { .phase { padding-left: 56px; } }
+
+    .phase__dot {
+      position: absolute; left: 17px; top: 8px; width: 24px; height: 24px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 800; color: #000; z-index: 2;
+      box-shadow: 0 0 20px var(--accent-gold-glow);
+    }
+    @media (max-width: 600px) { .phase__dot { left: 7px; } }
+
+    .phase__dot--1 { background: var(--accent-gold); }
+    .phase__dot--2 { background: var(--accent-blue); box-shadow: 0 0 20px rgba(91,141,239,0.3); }
+    .phase__dot--3 { background: var(--accent-purple); box-shadow: 0 0 20px rgba(167,139,250,0.3); }
+    .phase__dot--4 { background: var(--accent-green); box-shadow: 0 0 20px rgba(52,211,153,0.3); }
+    .phase__dot--5 { background: var(--accent-rose); box-shadow: 0 0 20px rgba(251,113,133,0.3); }
+    .phase__dot--6 { background: var(--accent-cyan); box-shadow: 0 0 20px rgba(34,211,238,0.3); }
+
+    .phase__header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .phase__number {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--text-muted);
+    }
+    .phase__title {
+      font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;
+    }
+    .phase__description {
+      color: var(--text-secondary); margin-bottom: 24px; font-size: 0.95rem;
+      line-height: 1.8; max-width: 700px;
+    }
+
+    /* ═══════════════════════════════════════════
+       TOPIC CARDS
+    ═══════════════════════════════════════════ */
+    .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+    .topic {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: all var(--transition-smooth); cursor: pointer;
+    }
+    .topic:hover {
+      border-color: rgba(245,197,24,0.2);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card), var(--shadow-glow);
+    }
+
+    .topic__header {
+      padding: 20px; display: flex; align-items: flex-start; gap: 14px;
+    }
+    .topic__icon {
+      width: 40px; height: 40px; min-width: 40px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .topic__icon--gold { background: var(--accent-gold-dim); }
+    .topic__icon--blue { background: var(--accent-blue-dim); }
+    .topic__icon--purple { background: var(--accent-purple-dim); }
+    .topic__icon--green { background: var(--accent-green-dim); }
+    .topic__icon--rose { background: var(--accent-rose-dim); }
+    .topic__icon--cyan { background: var(--accent-cyan-dim); }
+
+    .topic__info { flex: 1; min-width: 0; }
+    .topic__name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+    .topic__desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+    .topic__toggle {
+      color: var(--text-muted); font-size: 1.1rem; transition: transform var(--transition-fast);
+      margin-top: 4px;
+    }
+    .topic.open .topic__toggle { transform: rotate(180deg); }
+
+    .topic__body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .topic.open .topic__body { max-height: 800px; }
+    .topic__content {
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .topic__content ul {
+      list-style: none; padding: 0; margin-top: 14px;
+    }
+    .topic__content li {
+      padding: 8px 0; display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;
+    }
+    .topic__content li::before {
+      content: '▸'; color: var(--accent-gold); font-weight: 700;
+      margin-top: 1px; min-width: 12px;
+    }
+
+    /* Code blocks inside topics */
+    .topic__content code, .code-tag {
+      font-family: var(--font-mono); background: rgba(245,197,24,0.08);
+      color: var(--accent-gold); padding: 2px 7px; border-radius: 4px;
+      font-size: 0.8rem; font-weight: 500;
+    }
+
+    .tag-grid {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
+    }
+    .tag {
+      padding: 5px 12px; border-radius: 6px; font-size: 0.78rem;
+      font-family: var(--font-mono); font-weight: 500;
+      background: var(--bg-secondary); border: 1px solid var(--border-card);
+      color: var(--text-secondary); transition: all var(--transition-fast);
+    }
+    .tag:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .tag--gold { background: var(--accent-gold-dim); color: var(--accent-gold); border-color: rgba(245,197,24,0.2); }
+    .tag--blue { background: var(--accent-blue-dim); color: var(--accent-blue); border-color: rgba(91,141,239,0.2); }
+    .tag--purple { background: var(--accent-purple-dim); color: var(--accent-purple); border-color: rgba(167,139,250,0.2); }
+    .tag--green { background: var(--accent-green-dim); color: var(--accent-green); border-color: rgba(52,211,153,0.2); }
+
+    /* ═══════════════════════════════════════════
+       CHEATSHEET TABLE
+    ═══════════════════════════════════════════ */
+    .cheatsheet {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg); overflow: hidden; margin-top: 16px;
+    }
+    .cheatsheet__title {
+      padding: 16px 20px; font-weight: 700; font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cheatsheet table { width: 100%; border-collapse: collapse; }
+    .cheatsheet th {
+      text-align: left; padding: 10px 20px; font-size: 0.72rem;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-muted); border-bottom: 1px solid var(--border-subtle);
+    }
+    .cheatsheet td {
+      padding: 10px 20px; font-size: 0.85rem; color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .cheatsheet tr:last-child td { border-bottom: none; }
+    .cheatsheet tr:hover td { background: rgba(255,255,255,0.02); }
+    .cheatsheet td:first-child { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 500; }
+
+    /* ═══════════════════════════════════════════
+       PRO TIP CARDS
+    ═══════════════════════════════════════════ */
+    .tip {
+      background: linear-gradient(135deg, var(--accent-gold-dim), transparent);
+      border: 1px solid rgba(245,197,24,0.15); border-radius: var(--radius-md);
+      padding: 16px 20px; margin-top: 16px;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .tip__icon { font-size: 1.2rem; min-width: 24px; }
+    .tip__text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
+    .tip__text strong { color: var(--accent-gold); }
+
+    /* ═══════════════════════════════════════════
+       RELATED ROADMAPS (FOOTER)
+    ═══════════════════════════════════════════ */
+    .related {
+      padding: 80px 0; border-top: 1px solid var(--border-subtle);
+    }
+    .related__grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;
+    }
+    .related__card {
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      border-radius: var(--radius-md); padding: 24px; text-align: center;
+      transition: all var(--transition-smooth);
+    }
+    .related__card:hover {
+      border-color: var(--accent-gold); transform: translateY(-4px);
+      box-shadow: var(--shadow-card);
+    }
+    .related__card-icon { font-size: 2rem; margin-bottom: 12px; }
+    .related__card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+    .related__card-desc { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .footer {
+      padding: 40px 0; border-top: 1px solid var(--border-subtle);
+      text-align: center; color: var(--text-muted); font-size: 0.8rem;
+    }
+    .footer a { color: var(--accent-gold); }
+
+    /* ═══════════════════════════════════════════
+       PROGRESS TRACKER (SIDEBAR)
+    ═══════════════════════════════════════════ */
+    .progress-fab {
+      position: fixed; bottom: 24px; right: 24px; z-index: 90;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-gold), #e8a800);
+      border: none; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; box-shadow: 0 4px 20px rgba(245,197,24,0.3);
+      transition: all var(--transition-fast); color: #000; font-weight: 800;
+      font-size: 0.8rem;
+    }
+    .progress-fab:hover { transform: scale(1.08); }
+
+    /* back to top */
+    .back-to-top {
+      position: fixed; bottom: 24px; right: 90px; z-index: 90;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg-card); border: 1px solid var(--border-card);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition-fast); color: var(--text-secondary);
+      font-size: 1.1rem; opacity: 0; pointer-events: none;
+    }
+    .back-to-top.visible { opacity: 1; pointer-events: all; }
+    .back-to-top:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+
+    /* ═══════════════════════════════════════════
+       MODEL COMPARISON CARDS
+    ═══════════════════════════════════════════ */
+    .model-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px; margin-top: 14px;
+    }
+    .model-card {
+      background: var(--bg-secondary); border: 1px solid var(--border-card);
+      border-radius: var(--radius-md); padding: 18px; text-align: center;
+      transition: all var(--transition-fast);
+    }
+    .model-card:hover { border-color: var(--accent-gold); }
+    .model-card__name { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+    .model-card__badge {
+      display: inline-block; padding: 2px 10px; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 600; margin-bottom: 8px;
+    }
+    .model-card__desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ═══════════════════════════════════════════
+       UTILITIES
+    ═══════════════════════════════════════════ */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+    .mt-sm { margin-top: 12px; }
+    .mt-md { margin-top: 24px; }
+    .text-gold { color: var(--accent-gold); }
+    .text-blue { color: var(--accent-blue); }
+    .text-purple { color: var(--accent-purple); }
+    .text-green { color: var(--accent-green); }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 600px) {
+      .topics { grid-template-columns: 1fr; }
+      .hero__stats { gap: 24px; flex-wrap: wrap; }
+      .model-grid { grid-template-columns: 1fr; }
+      .related__grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background effects -->
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb--gold"></div>
+  <div class="bg-orb bg-orb--blue"></div>
+  <div class="bg-orb bg-orb--purple"></div>
+
+  <!-- ─── NAVIGATION ─── -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <div class="nav__brand">
+        <div class="nav__brand-icon">CC</div>
+        Claude Code Guide
+      </div>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#basics">Basics</a></li>
+        <li><a href="#using">Using CC</a></li>
+        <li><a href="#workflow">Workflow</a></li>
+        <li><a href="#advanced">Advanced</a></li>
+        <li><a href="#scaling">Scaling</a></li>
+      </ul>
+    </div>
+    <div class="nav__progress" id="navProgress"></div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero__badge">
+        <span>⚡</span> Roadmap 2026
+      </div>
+      <h1 class="hero__title">
+        Become a <span class="gradient-text">Claude Code</span> Expert
+      </h1>
+      <p class="hero__subtitle">
+        The definitive step-by-step roadmap to mastering Claude Code — from vibe coding fundamentals to advanced agentic workflows, hooks, subagents, MCP integrations, and scaling strategies.
+      </p>
+      <div class="hero__actions">
+        <a href="#intro" class="btn btn--primary">Start the Journey ↓</a>
+        <a href="#cheatsheet" class="btn btn--ghost">⌨ Command Cheatsheet</a>
+      </div>
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <div class="hero__stat-value">6</div>
+          <div class="hero__stat-label">Phases</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-value">30+</div>
+          <div class="hero__stat-label">Topics</div>
+        </div>
+        <div class="hero__stat">
+          <div class="hero__stat-value">50+</div>
+          <div class="hero__stat-label">Commands</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MAIN ROADMAP ─── -->
+  <main class="container">
+
+    <!-- ═══════════════════════════════════════
+         PHASE 1: INTRODUCTION
+    ═══════════════════════════════════════ -->
+    <section class="section" id="intro">
+      <div class="section__eyebrow">Phase 01</div>
+      <h2 class="section__title">Introduction</h2>
+      <p class="section__desc">Understand the paradigm shift. Vibe coding and AI coding agents are reshaping software development in 2026. Start here.</p>
+
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase__dot phase__dot--1">1</div>
+          <div class="phase__header">
+            <span class="phase__number">Phase 1</span>
+            <h3 class="phase__title">Enter the Vibe Coding Era</h3>
+          </div>
+          <p class="phase__description">
+            Before diving into Claude Code, understand the philosophy behind it. Vibe coding is about collaborating with AI at the speed of thought — describing intent and letting the agent handle implementation.
+          </p>
+
+          <div class="topics">
+            <!-- Topic: What is Vibe Coding -->
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--gold">🎯</div>
+                <div class="topic__info">
+                  <div class="topic__name">What is Vibe Coding?</div>
+                  <div class="topic__desc">The new development paradigm</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>A development approach where you describe what you want in natural language, and the AI agent writes, debugs, and refactors code autonomously</li>
+                    <li>Coined by Andrej Karpathy — "you fully give in to the vibes, embrace exponentials, and forget that the code even exists"</li>
+                    <li>Shifts the developer role from writing code to <strong>directing outcomes</strong></li>
+                    <li>Requires strong communication, architecture thinking, and prompt engineering skills</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Topic: What is a Coding Agent -->
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--blue">🤖</div>
+                <div class="topic__info">
+                  <div class="topic__name">What is a Coding Agent?</div>
+                  <div class="topic__desc">AI that writes & executes code</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>An AI system that can read files, write code, run terminal commands, browse the web, and iterate on problems autonomously</li>
+                    <li>Goes beyond autocomplete — it reasons, plans, and executes multi-step tasks</li>
+                    <li>Claude Code is Anthropic's flagship coding agent, operating directly in your terminal</li>
+                    <li>Available as CLI, desktop app, editor extensions (VS Code, JetBrains), and mobile channels</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Topic: What is the Agentic Loop -->
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--purple">🔄</div>
+                <div class="topic__info">
+                  <div class="topic__name">What is the Agentic Loop?</div>
+                  <div class="topic__desc">How AI agents think & act</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Observe</strong> → Read your codebase, files, errors, and context</li>
+                    <li><strong>Think</strong> → Reason about what needs to happen (chain-of-thought)</li>
+                    <li><strong>Act</strong> → Execute tools — edit files, run commands, search the web</li>
+                    <li><strong>Iterate</strong> → Check results, fix errors, refine until the task is complete</li>
+                    <li>This loop runs continuously, making the agent feel autonomous and proactive</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Topic: Setting up Claude -->
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--green">⚙️</div>
+                <div class="topic__info">
+                  <div class="topic__name">Setting up Claude</div>
+                  <div class="topic__desc">Subscription vs API usage</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Subscription (Pro/Max):</strong> Fixed monthly cost. Claude Pro ($20/mo) or Max ($100/mo with 5× more usage). Best for individual developers</li>
+                    <li><strong>API Usage:</strong> Pay-per-token pricing. Best for teams, CI/CD pipelines, and programmatic access. Set up via <code>ANTHROPIC_API_KEY</code></li>
+                    <li>Install via <code>npm install -g @anthropic-ai/claude-code</code></li>
+                    <li>Authenticate by running <code>claude</code> and following the login flow</li>
+                    <li>Available on: <strong>CLI</strong>, <strong>Desktop App</strong>, <strong>VS Code</strong>, <strong>JetBrains IDEs</strong>, <strong>Mobile</strong></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         PHASE 2: UNDERSTAND THE BASICS
+    ═══════════════════════════════════════ -->
+    <section class="section" id="basics">
+      <div class="section__eyebrow">Phase 02</div>
+      <h2 class="section__title">Understand the Basics</h2>
+      <p class="section__desc">Learn the core concepts that differentiate Claude Code from other tools. These fundamentals will shape how you interact with the agent.</p>
+
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase__dot phase__dot--2">2</div>
+          <div class="phase__header">
+            <span class="phase__number">Phase 2</span>
+            <h3 class="phase__title">Core Concepts & Differences</h3>
+          </div>
+          <p class="phase__description">
+            Claude Code has a unique architecture built around context, modes, tools, and extensibility. Understanding these distinctions is essential.
+          </p>
+
+          <div class="topics">
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--gold">📋</div>
+                <div class="topic__info">
+                  <div class="topic__name">CLAUDE.md</div>
+                  <div class="topic__desc">Your project's memory file</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>A markdown file Claude reads automatically at session start to understand your project</li>
+                    <li>Contains project conventions, architecture decisions, coding standards, and commands</li>
+                    <li>Think of it as a <strong>persistent system prompt</strong> for your codebase</li>
+                    <li>Can be placed in repo root, subdirectories, or <code>~/.claude/CLAUDE.md</code> globally</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--blue">🧩</div>
+                <div class="topic__info">
+                  <div class="topic__name">Skills</div>
+                  <div class="topic__desc">Reusable capability modules</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Focused instruction sets (SKILL.md files) that teach Claude specific capabilities</li>
+                    <li>Unlike CLAUDE.md, skills are invoked on-demand rather than always loaded</li>
+                    <li>Examples: "Deploy to AWS", "Write Jest tests", "Migrate database schema"</li>
+                    <li>Composable — skills can reference other skills for complex workflows</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--purple">🧠</div>
+                <div class="topic__info">
+                  <div class="topic__name">Context</div>
+                  <div class="topic__desc">What the agent knows & sees</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Claude has a <strong>context window</strong> — everything in the conversation uses tokens</li>
+                    <li>Files read, terminal output, search results all consume context</li>
+                    <li>Managing context is the #1 skill for efficient Claude Code usage</li>
+                    <li>Use <code>/compact</code> to summarize context, <code>/clear</code> to reset it</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--green">🔀</div>
+                <div class="topic__info">
+                  <div class="topic__name">Modes</div>
+                  <div class="topic__desc">Plan, Act, or both</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Normal mode</strong> — Claude reads, writes, and executes freely</li>
+                    <li><strong>Plan mode</strong> (<code>/plan</code>) — Claude only plans, no code changes until you approve</li>
+                    <li>Plan mode is essential for complex tasks — review before execution</li>
+                    <li>Toggle between modes dynamically during a session</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--rose">🛠️</div>
+                <div class="topic__info">
+                  <div class="topic__name">Models, Tools & MCP</div>
+                  <div class="topic__desc">The engine and its extensions</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Models:</strong> Opus (deep reasoning), Sonnet (balanced), Haiku (fast & cheap)</li>
+                    <li><strong>Tools:</strong> Built-in capabilities — file editing, terminal, search, browser</li>
+                    <li><strong>MCP (Model Context Protocol):</strong> Standard for connecting external tools — databases, APIs, services</li>
+                    <li><strong>Plugins:</strong> Community and official extensions (e.g., Code Intelligence)</li>
+                  </ul>
+                  <div class="model-grid mt-sm">
+                    <div class="model-card">
+                      <div class="model-card__badge" style="background:var(--accent-gold-dim);color:var(--accent-gold);">Flagship</div>
+                      <div class="model-card__name">Opus</div>
+                      <div class="model-card__desc">Deep reasoning, complex architecture. Best for planning & hard bugs.</div>
+                    </div>
+                    <div class="model-card">
+                      <div class="model-card__badge" style="background:var(--accent-blue-dim);color:var(--accent-blue);">Balanced</div>
+                      <div class="model-card__name">Sonnet</div>
+                      <div class="model-card__desc">Fast & capable. Default choice for most coding tasks.</div>
+                    </div>
+                    <div class="model-card">
+                      <div class="model-card__badge" style="background:var(--accent-green-dim);color:var(--accent-green);">Speed</div>
+                      <div class="model-card__name">Haiku</div>
+                      <div class="model-card__desc">Ultra-fast, lightweight. Perfect for quick questions & simple edits.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--cyan">🪝</div>
+                <div class="topic__info">
+                  <div class="topic__name">Hooks & Subagents</div>
+                  <div class="topic__desc">Automation & delegation</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Hooks:</strong> Event-driven scripts that run before/after Claude actions (PreToolUse, PostToolUse, etc.)</li>
+                    <li><strong>Subagents:</strong> Spawn isolated Claude instances for parallel tasks</li>
+                    <li>Hooks let you enforce guardrails — e.g., auto-lint after every file save</li>
+                    <li>Subagents let you scale — e.g., one agent reviews code while another writes tests</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         PHASE 3: USING CLAUDE CODE
+    ═══════════════════════════════════════ -->
+    <section class="section" id="using">
+      <div class="section__eyebrow">Phase 03</div>
+      <h2 class="section__title">Using Claude Code</h2>
+      <p class="section__desc">Master the keyboard shortcuts, commands, and workflows that make you dangerously productive with Claude Code.</p>
+
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase__dot phase__dot--3">3</div>
+          <div class="phase__header">
+            <span class="phase__number">Phase 3</span>
+            <h3 class="phase__title">Commands, Shortcuts & Invocations</h3>
+          </div>
+
+          <!-- Keyboard Cheatsheet -->
+          <div id="cheatsheet">
+            <div class="cheatsheet">
+              <div class="cheatsheet__title">⌨️ Keyboard Shortcuts</div>
+              <table>
+                <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+                <tbody>
+                  <tr><td>Ctrl+C</td><td>Cancel the current generation / interrupt Claude</td></tr>
+                  <tr><td>Ctrl+R</td><td>Search command history (reverse search)</td></tr>
+                  <tr><td>Esc</td><td>Cancel current input / dismiss</td></tr>
+                  <tr><td>Esc + Esc</td><td>Force stop the agentic loop immediately</td></tr>
+                  <tr><td>Shift+Tab</td><td>Toggle between multi-line and single-line input mode</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="cheatsheet mt-md">
+            <div class="cheatsheet__title">🚀 CLI Invocation Patterns</div>
+            <table>
+              <thead><tr><th>Command</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>claude</td><td>Start an interactive REPL session in the current directory</td></tr>
+                <tr><td>claude -r</td><td>Resume the most recent conversation where you left off</td></tr>
+                <tr><td>claude "query"</td><td>Run a one-shot command and exit (non-interactive)</td></tr>
+                <tr><td>claude -p "query"</td><td>Run in <strong>print mode</strong> — output only, no interactive session</td></tr>
+                <tr><td>claude -c &lt;id&gt;</td><td>Resume a specific conversation by ID</td></tr>
+                <tr><td>claude --add-dir &lt;path&gt;</td><td>Add additional directories as context for the session</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cheatsheet mt-md">
+            <div class="cheatsheet__title">📎 Slash Commands</div>
+            <table>
+              <thead><tr><th>Command</th><th>Category</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>/help</td><td>Session</td><td>Show help and available commands</td></tr>
+                <tr><td>/usage</td><td>Session</td><td>Display current token and cost usage</td></tr>
+                <tr><td>/cost</td><td>Session</td><td>Show detailed cost breakdown</td></tr>
+                <tr><td>/clear</td><td>Context</td><td>Clear conversation history to free context window</td></tr>
+                <tr><td>/compact</td><td>Context</td><td>Summarize conversation to reduce token usage</td></tr>
+                <tr><td>/context</td><td>Context</td><td>Show current context sources and token counts</td></tr>
+                <tr><td>/status</td><td>Session</td><td>Show session status (model, tokens, permissions)</td></tr>
+                <tr><td>/plan</td><td>Workflow</td><td>Enter plan mode — Claude plans but doesn't execute</td></tr>
+                <tr><td>/rewind</td><td>Session</td><td>Revert to a previous point in the conversation</td></tr>
+                <tr><td>/exit</td><td>Session</td><td>End the current session</td></tr>
+                <tr><td>/export</td><td>Session</td><td>Export conversation as Markdown or JSON</td></tr>
+                <tr><td>/init</td><td>Memory</td><td>Create/update CLAUDE.md for the current project</td></tr>
+                <tr><td>/memory</td><td>Memory</td><td>View and manage persistent memory entries</td></tr>
+                <tr><td>/config</td><td>Config</td><td>View and modify Claude Code configuration</td></tr>
+                <tr><td>/permissions</td><td>Config</td><td>Manage tool permission settings</td></tr>
+                <tr><td>/model</td><td>Config</td><td>Switch the active AI model</td></tr>
+                <tr><td>/agents</td><td>Config</td><td>Configure subagents</td></tr>
+                <tr><td>/hooks</td><td>Config</td><td>Manage event hooks</td></tr>
+                <tr><td>/mcp</td><td>Config</td><td>Configure MCP server connections</td></tr>
+                <tr><td>/doctor</td><td>Debug</td><td>Run diagnostics on your Claude Code setup</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cheatsheet mt-md">
+            <div class="cheatsheet__title">🔤 Special Prefixes</div>
+            <table>
+              <thead><tr><th>Prefix</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>!</td><td>Run a shell command directly (e.g., <code>!npm test</code>)</td></tr>
+                <tr><td>\</td><td>Escape a command — send literal text instead of interpreting</td></tr>
+                <tr><td>@</td><td>Reference a file or symbol (e.g., <code>@src/utils.ts</code>)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tip mt-md">
+            <div class="tip__icon">💡</div>
+            <div class="tip__text">
+              <strong>Pro tip:</strong> Combine <code>claude -r</code> with <code>/compact</code> for long-running projects. Resume your session, then compact to free up context while retaining key decisions and progress.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         PHASE 4: CLAUDE WORKFLOW
+    ═══════════════════════════════════════ -->
+    <section class="section" id="workflow">
+      <div class="section__eyebrow">Phase 04</div>
+      <h2 class="section__title">Claude Workflow</h2>
+      <p class="section__desc">Develop systematic workflows for using Claude Code effectively across different task types — from quick fixes to full-feature development.</p>
+
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase__dot phase__dot--4">4</div>
+          <div class="phase__header">
+            <span class="phase__number">Phase 4</span>
+            <h3 class="phase__title">Best Practices & Session Management</h3>
+          </div>
+
+          <div class="topics">
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--gold">🔐</div>
+                <div class="topic__info">
+                  <div class="topic__name">Permission Modes</div>
+                  <div class="topic__desc">Control what Claude can do</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Ask mode:</strong> Claude asks permission before every tool use (safest)</li>
+                    <li><strong>Auto-allow mode:</strong> Pre-approve safe operations like file reads</li>
+                    <li><strong>YOLO mode:</strong> Claude runs everything without asking (use with caution!)</li>
+                    <li>Configure per-project via <code>/permissions</code> or in <code>.claude/settings.json</code></li>
+                    <li>Best practice: Use ask mode for unfamiliar codebases, auto-allow for trusted projects</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--blue">📝</div>
+                <div class="topic__info">
+                  <div class="topic__name">Plan Mode</div>
+                  <div class="topic__desc">Think before acting</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Activate with <code>/plan</code> — Claude researches and creates an implementation plan</li>
+                    <li>Review the plan, ask questions, iterate on the approach</li>
+                    <li>Exit plan mode and Claude executes the approved plan</li>
+                    <li>Essential for: major refactors, new features, architectural changes</li>
+                    <li>Skip for: quick bug fixes, formatting, simple one-liner tasks</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--purple">📂</div>
+                <div class="topic__info">
+                  <div class="topic__name">Manage Sessions</div>
+                  <div class="topic__desc">Resume & rewind conversations</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Resume:</strong> <code>claude -r</code> picks up where you left off, with full context</li>
+                    <li><strong>Rewind:</strong> <code>/rewind</code> rolls back to a previous point — undo mistakes</li>
+                    <li>Sessions are persisted locally — you can resume days later</li>
+                    <li>Use <code>claude -c &lt;id&gt;</code> to resume a specific older session by its ID</li>
+                    <li>Tip: Start new sessions for distinct tasks to keep context clean</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--green">✅</div>
+                <div class="topic__info">
+                  <div class="topic__name">Usage Best Practices</div>
+                  <div class="topic__desc">Work smarter, not harder</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Be specific:</strong> "Add error handling to the login function in auth.ts" beats "fix the login"</li>
+                    <li><strong>Provide context:</strong> Use <code>@</code> file references to point Claude to relevant code</li>
+                    <li><strong>Iterate in small steps:</strong> Break large tasks into focused subtasks</li>
+                    <li><strong>Review diffs:</strong> Always review changes before accepting them</li>
+                    <li><strong>Use git:</strong> Commit before asking Claude to make major changes — easy rollback</li>
+                    <li><strong>Leverage tests:</strong> Ask Claude to write tests first, then implement — TDD workflow</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         PHASE 5: ADVANCED CLAUDE CODE
+    ═══════════════════════════════════════ -->
+    <section class="section" id="advanced">
+      <div class="section__eyebrow">Phase 05</div>
+      <h2 class="section__title">Advanced Claude Code</h2>
+      <p class="section__desc">Level up with CLAUDE.md mastery, custom hooks, subagents, MCP integrations, context management, and model tuning.</p>
+
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase__dot phase__dot--5">5</div>
+          <div class="phase__header">
+            <span class="phase__number">Phase 5</span>
+            <h3 class="phase__title">Deep Customization & Agentic Patterns</h3>
+          </div>
+
+          <div class="topics">
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--gold">📄</div>
+                <div class="topic__info">
+                  <div class="topic__name">Mastering CLAUDE.md</div>
+                  <div class="topic__desc">Structure, locations, best practices</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>How to Structure:</strong> Start with project overview, then conventions, common commands, gotchas</li>
+                    <li>Use headers for sections: <code># Overview</code>, <code># Architecture</code>, <code># Commands</code>, <code># Conventions</code></li>
+                    <li><strong>Locations (priority order):</strong> <code>~/.claude/CLAUDE.md</code> (global) → repo root → subdirectories</li>
+                    <li>Keep it concise — every token in CLAUDE.md costs context window space</li>
+                    <li>Include examples of desired output format to train Claude's responses</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--blue">🎓</div>
+                <div class="topic__info">
+                  <div class="topic__name">Creating Skills</div>
+                  <div class="topic__desc">Build reusable instruction packs</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Create a <code>SKILL.md</code> file in any directory under your project</li>
+                    <li>Skills are loaded on-demand — Claude discovers them when relevant</li>
+                    <li><strong>Best practices:</strong> One skill per domain, include examples, define clear boundaries</li>
+                    <li>Compose skills by referencing others: "Use the deployment skill to push this to staging"</li>
+                    <li>Store shared skills in <code>~/.claude/skills/</code> for cross-project reuse</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--purple">🧬</div>
+                <div class="topic__info">
+                  <div class="topic__name">Subagents</div>
+                  <div class="topic__desc">Spawn parallel Claude instances</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Subagents are isolated Claude instances spawned for specific subtasks</li>
+                    <li>Run in their own context — don't pollute the parent's context window</li>
+                    <li>Use for: parallel code reviews, test generation, documentation, research</li>
+                    <li>Configure via <code>/agents</code> or <code>.claude/agents.json</code></li>
+                    <li>Each subagent can have its own model, tools, and permission settings</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--green">🪝</div>
+                <div class="topic__info">
+                  <div class="topic__name">Hooks Deep Dive</div>
+                  <div class="topic__desc">Events, types, inputs & outputs</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Hook Events:</strong> SessionStart, SessionEnd, PreToolUse, PostToolUse, UserPromptSubmit, Stop</li>
+                    <li><strong>Hook Types:</strong> Shell commands, scripts, validation checks</li>
+                    <li><strong>Matchers:</strong> Filter hooks to specific tools (e.g., only run on <code>write_file</code>)</li>
+                    <li><strong>Inputs:</strong> Hooks receive the tool name, parameters, and session context</li>
+                    <li><strong>Outputs:</strong> Hooks can modify, block, or augment tool behavior</li>
+                    <li>Example: Auto-run <code>eslint --fix</code> after every file write</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--rose">📊</div>
+                <div class="topic__info">
+                  <div class="topic__name">Managing Context</div>
+                  <div class="topic__desc">The most critical optimization skill</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Understand pricing:</strong> Every token in/out costs money. Opus is ~15× more expensive than Haiku</li>
+                    <li><strong>Use <code>/compact</code> and <code>/clear</code>:</strong> Compact summarizes; clear resets. Use compact first, clear if needed</li>
+                    <li><strong>Be mindful of extensions:</strong> MCP servers, plugins, and large file reads consume context fast</li>
+                    <li><strong>Use subagents and hooks:</strong> Offload subtasks to subagents to preserve parent context</li>
+                    <li><strong>Thinking modes & effort:</strong> Adjust reasoning depth — sometimes you don't need full chain-of-thought</li>
+                    <li><strong>Prompt caching:</strong> Anthropic caches repeated prompt prefixes — keep CLAUDE.md stable for savings</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--cyan">🔌</div>
+                <div class="topic__info">
+                  <div class="topic__name">Connecting Tools with MCP</div>
+                  <div class="topic__desc">Extend Claude's capabilities</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>MCP (Model Context Protocol):</strong> Open standard for connecting AI to external tools</li>
+                    <li>Connect to databases, APIs, cloud services, Postman, GitHub, Slack, etc.</li>
+                    <li>Configure MCP servers via <code>/mcp</code> or <code>.claude/mcp.json</code></li>
+                    <li><strong>Skills for MCP:</strong> Create SKILL.md files that teach Claude how to use specific MCP servers</li>
+                    <li><strong>Channels:</strong> Bidirectional communication pathways for real-time data flow</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         PHASE 6: SCALING & SECURITY
+    ═══════════════════════════════════════ -->
+    <section class="section" id="scaling">
+      <div class="section__eyebrow">Phase 06</div>
+      <h2 class="section__title">Scaling & Production</h2>
+      <p class="section__desc">Take Claude Code beyond individual use. Run headless pipelines, coordinate agent teams, customize output, and maintain security at scale.</p>
+
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase__dot phase__dot--6">6</div>
+          <div class="phase__header">
+            <span class="phase__number">Phase 6</span>
+            <h3 class="phase__title">Enterprise-Grade AI Development</h3>
+          </div>
+
+          <div class="topics">
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--gold">🎛️</div>
+                <div class="topic__info">
+                  <div class="topic__name">Model Configuration</div>
+                  <div class="topic__desc">Opusplan & model routing</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Opusplan:</strong> Use Opus for planning, Sonnet for execution — best of both worlds</li>
+                    <li>Route tasks by complexity: Haiku for quick lookups, Sonnet for coding, Opus for architecture</li>
+                    <li>Configure per-project model preferences in <code>.claude/settings.json</code></li>
+                    <li>Adjust thinking effort levels to optimize cost vs. quality tradeoff</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--blue">📡</div>
+                <div class="topic__info">
+                  <div class="topic__name">Headless Mode</div>
+                  <div class="topic__desc">CI/CD & automated pipelines</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Run Claude Code without interactive input — perfect for CI/CD pipelines</li>
+                    <li>Use <code>claude -p "task" --output json</code> for machine-parseable output</li>
+                    <li>Integrate into GitHub Actions, GitLab CI, or any automation workflow</li>
+                    <li>Auto-review PRs, generate changelogs, run security audits — all unattended</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--purple">🌿</div>
+                <div class="topic__info">
+                  <div class="topic__name">Git Worktrees</div>
+                  <div class="topic__desc">Parallel branch development</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Use git worktrees to run multiple Claude instances on different branches simultaneously</li>
+                    <li>Each worktree has its own working directory — no conflicts</li>
+                    <li>Pattern: Main branch for features, worktree for bug fixes, another for experiments</li>
+                    <li>Speeds up multi-task workflows dramatically</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--green">👥</div>
+                <div class="topic__info">
+                  <div class="topic__name">Agent Teams</div>
+                  <div class="topic__desc">Orchestrated multi-agent workflows</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Coordinate multiple Claude instances working on the same project</li>
+                    <li>Architect agent → assigns tasks. Worker agents → implement. Reviewer agent → validates</li>
+                    <li>Combine with git worktrees for truly parallel development</li>
+                    <li>Define team configurations in <code>.claude/agents.json</code></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--rose">🎨</div>
+                <div class="topic__info">
+                  <div class="topic__name">Output Styles & Plugins</div>
+                  <div class="topic__desc">Customize Claude's behavior</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li><strong>Output Styles:</strong> Control verbosity, formatting, and response structure</li>
+                    <li><strong>Customize status line:</strong> Show token count, cost, model, and custom info in the terminal</li>
+                    <li><strong>Scheduling Jobs:</strong> Cron-like scheduling for recurring Claude tasks</li>
+                    <li><strong>Code Intelligence plugin:</strong> Enhanced code navigation and understanding</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+              <div class="topic__header">
+                <div class="topic__icon topic__icon--cyan">🛡️</div>
+                <div class="topic__info">
+                  <div class="topic__name">Security Best Practices</div>
+                  <div class="topic__desc">Keep your code & data safe</div>
+                </div>
+                <div class="topic__toggle">▾</div>
+              </div>
+              <div class="topic__body">
+                <div class="topic__content">
+                  <ul>
+                    <li>Never expose API keys, secrets, or credentials in prompts or CLAUDE.md</li>
+                    <li>Use environment variables and <code>.env</code> files (add to <code>.gitignore</code>)</li>
+                    <li>Review all Claude-generated code for security vulnerabilities before merging</li>
+                    <li>Use permission modes to restrict dangerous operations (file deletion, network access)</li>
+                    <li>Implement hooks for security scanning — auto-run <code>gitleaks</code> or <code>trivy</code> on changes</li>
+                    <li>Be cautious with MCP servers — only connect trusted, verified services</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         RELATED ROADMAPS
+    ═══════════════════════════════════════ -->
+    <section class="related">
+      <div class="section__eyebrow">Continue Learning</div>
+      <h2 class="section__title">Related Roadmaps</h2>
+      <p class="section__desc">Claude Code is one piece of the puzzle. Explore these complementary skills to become a complete AI-empowered developer.</p>
+      <div class="related__grid">
+        <div class="related__card">
+          <div class="related__card-icon">🎨</div>
+          <div class="related__card-title">Vibe Coding</div>
+          <div class="related__card-desc">Master natural-language-driven development</div>
+        </div>
+        <div class="related__card">
+          <div class="related__card-icon">🤖</div>
+          <div class="related__card-title">AI Agents</div>
+          <div class="related__card-desc">Build autonomous agent systems</div>
+        </div>
+        <div class="related__card">
+          <div class="related__card-icon">⚡</div>
+          <div class="related__card-title">AI Engineer</div>
+          <div class="related__card-desc">Full-stack AI engineering skills</div>
+        </div>
+        <div class="related__card">
+          <div class="related__card-icon">💬</div>
+          <div class="related__card-title">Prompt Engineering</div>
+          <div class="related__card-desc">Craft precise, powerful prompts</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="container">
+      <p>Claude Code Mastery Guide — 2026 Edition</p>
+      <p style="margin-top:6px;">Built with ❤️ for the AI-first developer community &nbsp;·&nbsp; Based on the <a href="https://roadmap.sh" target="_blank">roadmap.sh</a> Claude Code roadmap</p>
+    </div>
+  </footer>
+
+  <!-- ─── FABs ─── -->
+  <button class="progress-fab" id="progressFab" title="Reading progress">0%</button>
+  <button class="back-to-top" id="backToTop" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <!-- ═══════════════════════════════════════════
+       JAVASCRIPT
+  ═══════════════════════════════════════════ -->
+  <script>
+    // ─── Toggle Topic Card ───
+    function toggleTopic(el) {
+      el.classList.toggle('open');
+    }
+
+    // ─── Nav Scroll Effects ───
+    const nav = document.getElementById('nav');
+    const navProgress = document.getElementById('navProgress');
+    const progressFab = document.getElementById('progressFab');
+    const backToTop = document.getElementById('backToTop');
+
+    function onScroll() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = Math.min((scrollTop / docHeight) * 100, 100);
+
+      // Nav shadow
+      nav.classList.toggle('scrolled', scrollTop > 40);
+
+      // Progress bar
+      navProgress.style.width = progress + '%';
+
+      // Progress FAB
+      progressFab.textContent = Math.round(progress) + '%';
+
+      // Back to top
+      backToTop.classList.toggle('visible', scrollTop > 600);
+
+      // Active nav link
+      const sections = ['intro', 'basics', 'using', 'workflow', 'advanced', 'scaling'];
+      let active = '';
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top < 200) active = id;
+      }
+      document.querySelectorAll('.nav__links a').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // ─── Mobile Nav Toggle ───
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    // Close mobile nav on link click
+    document.querySelectorAll('.nav__links a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('navLinks').classList.remove('open');
+      });
+    });
+
+    // ─── Intersection Observer for Phase Animations ───
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+    );
+    document.querySelectorAll('.phase').forEach(el => observer.observe(el));
+
+    // ─── Expand All Topics on Double Click ───
+    document.addEventListener('dblclick', (e) => {
+      if (e.target.closest('.section__title')) {
+        const section = e.target.closest('.section');
+        const topics = section.querySelectorAll('.topic');
+        const allOpen = [...topics].every(t => t.classList.contains('open'));
+        topics.forEach(t => t.classList.toggle('open', !allOpen));
+      }
+    });
+  </script>
+</body>
+</html>

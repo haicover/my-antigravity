@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Set · __SKILL_NAME_PLACEHOLDER__</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset & Variables ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0f0e0c;
+      --bg-card:     #17160f;
+      --bg-hover:    #1e1d15;
+      --bg-input:    #13120c;
+      --border:      #2a2820;
+      --border-mid:  #3a3828;
+
+      --ink:         #f0ede4;
+      --ink-mid:     #9a9485;
+      --ink-faint:   #4a4840;
+
+      --gold:        #c9a84c;
+      --gold-glow:   rgba(201,168,76,0.12);
+      --gold-dim:    #7a6228;
+      --green:       #6aad6a;
+      --green-bg:    rgba(106,173,106,0.08);
+      --red:         #d05555;
+      --red-bg:      rgba(208,85,85,0.08);
+
+      --radius:      8px;
+      --radius-sm:   5px;
+      --transition:  0.18s ease;
+
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+      --font-mono:    'DM Mono', 'Courier New', monospace;
+    }
+
+    /* ── Base ─────────────────────────────────────────────────── */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Subtle grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout ───────────────────────────────────────────────── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Header ───────────────────────────────────────────────── */
+    .header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .header-left { flex: 1; min-width: 0; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--gold);
+    }
+
+    .skill-desc {
+      margin-top: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--ink-mid);
+      font-style: italic;
+      max-width: 640px;
+      line-height: 1.6;
+    }
+
+    /* ── Stats Bar ────────────────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.15rem;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .stat-value.green { color: var(--green); }
+    .stat-value.red   { color: var(--red);   }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-faint);
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 36px;
+      background: var(--border);
+    }
+
+    /* ── Toolbar ──────────────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-faint);
+      pointer-events: none;
+      font-size: 0.85rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.55rem 0.75rem 0.55rem 2.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      transition: var(--transition);
+    }
+
+    .search-input::placeholder { color: var(--ink-faint); }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--gold-dim);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.375rem;
+    }
+
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover { border-color: var(--border-mid); color: var(--ink); }
+
+    .filter-btn.active-all    { background: var(--bg-card); border-color: var(--gold-dim); color: var(--gold); }
+    .filter-btn.active-yes    { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+    .filter-btn.active-no     { background: var(--red-bg);   border-color: var(--red);   color: var(--red);   }
+
+    .spacer { flex: 1; }
+
+    /* ── Action Buttons ───────────────────────────────────────── */
+    .btn {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.8125rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-add {
+      background: var(--gold);
+      color: #0f0e0c;
+      border-color: var(--gold);
+    }
+    .btn-add:hover { filter: brightness(1.1); }
+
+    .btn-export {
+      background: transparent;
+      border-color: var(--border-mid);
+      color: var(--ink-mid);
+    }
+    .btn-export:hover { border-color: var(--ink-mid); color: var(--ink); }
+
+    /* ── Section Header ───────────────────────────────────────── */
+    .section-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0;
+      margin: 0.5rem 0 0;
+    }
+
+    .section-pill-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-pill-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      border-radius: 99px;
+      border: 1px solid;
+    }
+
+    .section-pill-label.trigger {
+      color: var(--green);
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .section-pill-label.no-trigger {
+      color: var(--red);
+      border-color: var(--red);
+      background: var(--red-bg);
+    }
+
+    .section-count {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--ink-faint);
+    }
+
+    /* ── Query Card ───────────────────────────────────────────── */
+    .query-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .query-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: start;
+      gap: 0;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .query-card:hover {
+      border-color: var(--border-mid);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    .query-card.is-trigger  { border-left: 2px solid var(--green); }
+    .query-card.no-trigger  { border-left: 2px solid var(--red);   }
+
+    .query-card.highlight {
+      border-color: var(--gold-dim);
+      box-shadow: 0 0 0 2px var(--gold-glow);
+    }
+
+    /* Text area */
+    .query-text {
+      padding: 0.85rem 1rem;
+      min-height: 70px;
+    }
+
+    .query-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      resize: none;
+      min-height: 50px;
+      field-sizing: content;
+    }
+
+    .query-textarea:focus { outline: none; }
+    .query-textarea::placeholder { color: var(--ink-faint); }
+
+    /* Toggle section */
+    .query-toggle {
+      padding: 0.85rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      border-left: 1px solid var(--border);
+      min-width: 80px;
+    }
+
+    .toggle-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .toggle-label.yes { color: var(--green); }
+    .toggle-label.no  { color: var(--red);   }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: var(--transition);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .toggle input:checked + .slider { background: var(--green); }
+    .toggle input:checked + .slider::before { transform: translateX(16px); }
+
+    /* Delete button */
+    .query-actions {
+      padding: 0.85rem 0.75rem;
+      border-left: 1px solid var(--border);
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--ink-faint);
+      padding: 0.35rem 0.6rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-family: var(--font-body);
+      transition: var(--transition);
+    }
+
+    .btn-delete:hover {
+      background: var(--red-bg);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* ── Empty state ──────────────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--ink-faint);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    /* ── Toast / Undo ─────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--ink-mid);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      transform: translateY(120%);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 100;
+    }
+
+    .toast.visible { transform: translateY(0); }
+
+    .toast-undo {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--gold);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: none;
+      background: none;
+      padding: 0;
+    }
+
+    .toast-undo:hover { text-decoration: underline; }
+
+    /* ── Unsaved indicator ────────────────────────────────────── */
+    .unsaved-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      margin-left: 0.4rem;
+      vertical-align: middle;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .unsaved-dot.visible { opacity: 1; }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .shortcuts {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.05em;
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .shortcut-key {
+      display: inline-block;
+      padding: 0.1rem 0.35rem;
+      border: 1px solid var(--border-mid);
+      border-radius: 3px;
+      margin-right: 0.2rem;
+      font-size: 0.6rem;
+    }
+
+    /* ── No results ───────────────────────────────────────────── */
+    .no-results {
+      padding: 2.5rem;
+      text-align: center;
+      color: var(--ink-faint);
+      font-style: italic;
+      font-family: var(--font-display);
+    }
+
+    /* ── Scrollbar ────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .page { padding: 1.5rem 1rem 4rem; }
+      .header { flex-direction: column; align-items: flex-start; }
+      .stats-bar { gap: 1rem; }
+      .query-card { grid-template-columns: 1fr auto; }
+      .query-actions { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="eyebrow">Eval Set Review</div>
+        <h1 id="skill-name-title">
+          <em id="skill-name-display">__SKILL_NAME_PLACEHOLDER__</em>
+          <span class="unsaved-dot" id="unsaved-dot"></span>
+        </h1>
+        <p class="skill-desc" id="skill-desc">__SKILL_DESCRIPTION_PLACEHOLDER__</p>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value green" id="stat-yes">0</span>
+          <span class="stat-label">Trigger</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value red" id="stat-no">0</span>
+          <span class="stat-label">No Trigger</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input
+          type="search"
+          id="search-input"
+          class="search-input"
+          placeholder="Search queries…"
+          oninput="onSearch()"
+        >
+      </div>
+
+      <div class="filter-group">
+        <button class="filter-btn active-all" id="filter-all" onclick="setFilter('all')">All</button>
+        <button class="filter-btn" id="filter-yes" onclick="setFilter('yes')">Trigger</button>
+        <button class="filter-btn" id="filter-no"  onclick="setFilter('no')">No Trigger</button>
+      </div>
+
+      <span class="spacer"></span>
+
+      <button class="btn btn-add" onclick="addRow()" title="Add query (Ctrl+Enter)">
+        + Add Query
+      </button>
+      <button class="btn btn-export" onclick="exportEvalSet()" title="Export JSON">
+        ↓ Export JSON
+      </button>
+    </div>
+
+    <!-- Query List -->
+    <div id="query-container"></div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="page" style="padding-top:0">
+    <div class="footer">
+      <div class="shortcuts">
+        <span><kbd class="shortcut-key">Ctrl</kbd><kbd class="shortcut-key">↵</kbd> Add query</span>
+        <span><kbd class="shortcut-key">Ctrl</kbd><kbd class="shortcut-key">E</kbd> Export</span>
+        <span><kbd class="shortcut-key">Ctrl</kbd><kbd class="shortcut-key">Z</kbd> Undo delete</span>
+        <span><kbd class="shortcut-key">/</kbd> Focus search</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ink-faint)">
+        Changes auto-saved in memory
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span id="toast-msg">Query deleted</span>
+    <button class="toast-undo" id="toast-undo-btn" onclick="undoDelete()">Undo</button>
+  </div>
+
+  <!-- ── Script ──────────────────────────────────────────────── -->
+  <script>
+    /* ── Data ──────────────────────────────────────────────────── */
+    const EVAL_DATA = __EVAL_DATA_PLACEHOLDER__;
+
+    // State
+    let items        = EVAL_DATA.map((d, i) => ({ ...d, _id: i }));
+    let nextId       = items.length;
+    let filterMode   = 'all';   // 'all' | 'yes' | 'no'
+    let searchQuery  = '';
+    let deletedItem  = null;    // { item, index } for undo
+    let toastTimer   = null;
+    let hasUnsaved   = false;
+
+    /* ── Filtering ─────────────────────────────────────────────── */
+    function getVisible() {
+      return items.filter(item => {
+        const matchFilter =
+          filterMode === 'all' ||
+          (filterMode === 'yes' && item.should_trigger) ||
+          (filterMode === 'no'  && !item.should_trigger);
+
+        const q = searchQuery.trim().toLowerCase();
+        const matchSearch = !q || item.query.toLowerCase().includes(q);
+
+        return matchFilter && matchSearch;
+      });
+    }
+
+    /* ── Render ────────────────────────────────────────────────── */
+    function render() {
+      const container = document.getElementById('query-container');
+      const visible   = getVisible();
+
+      // Update stats (always on full list)
+      const total = items.length;
+      const yesN  = items.filter(i => i.should_trigger).length;
+      const noN   = total - yesN;
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-yes').textContent   = yesN;
+      document.getElementById('stat-no').textContent    = noN;
+
+      if (total === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">◇</div>
+            <p>No queries yet. Add one to get started.</p>
+          </div>`;
+        return;
+      }
+
+      if (visible.length === 0) {
+        container.innerHTML = `<div class="no-results">No queries match your search.</div>`;
+        return;
+      }
+
+      // Group by should_trigger
+      const triggers   = visible.filter(i =>  i.should_trigger);
+      const noTriggers = visible.filter(i => !i.should_trigger);
+
+      let html = '';
+
+      if (triggers.length > 0) {
+        html += renderSection('trigger', `Should Trigger`, triggers.length, triggers);
+      }
+      if (noTriggers.length > 0) {
+        html += renderSection('no-trigger', `Should NOT Trigger`, noTriggers.length, noTriggers);
+      }
+
+      container.innerHTML = html;
+
+      // Re-attach events (since we use innerHTML)
+      container.querySelectorAll('.query-textarea').forEach(ta => {
+        const id = Number(ta.dataset.id);
+        ta.addEventListener('input', () => {
+          updateQuery(id, ta.value);
+          autoResize(ta);
+        });
+        autoResize(ta);
+      });
+
+      container.querySelectorAll('.toggle-input').forEach(cb => {
+        const id = Number(cb.dataset.id);
+        cb.addEventListener('change', () => updateTrigger(id, cb.checked));
+      });
+
+      container.querySelectorAll('.btn-delete').forEach(btn => {
+        const id = Number(btn.dataset.id);
+        btn.addEventListener('click', () => deleteRow(id));
+      });
+
+      // Highlight search matches
+      if (searchQuery.trim()) {
+        highlightMatches(container, searchQuery.trim());
+      }
+    }
+
+    function renderSection(cls, label, count, sectionItems) {
+      const cards = sectionItems.map(item => renderCard(item)).join('');
+      return `
+        <div class="section-pill">
+          <div class="section-pill-line"></div>
+          <span class="section-pill-label ${cls}">${label}</span>
+          <span class="section-count">${count}</span>
+          <div class="section-pill-line"></div>
+        </div>
+        <div class="query-list">${cards}</div>`;
+    }
+
+    function renderCard(item) {
+      const cls      = item.should_trigger ? 'is-trigger' : 'no-trigger';
+      const checked  = item.should_trigger ? 'checked' : '';
+      const labelCls = item.should_trigger ? 'yes' : 'no';
+      const labelTxt = item.should_trigger ? 'Trigger' : 'No';
+      const escaped  = escapeHtml(item.query);
+
+      return `
+        <div class="query-card ${cls}" data-id="${item._id}">
+          <div class="query-text">
+            <textarea
+              class="query-textarea"
+              data-id="${item._id}"
+              placeholder="Enter query…"
+              rows="2"
+            >${escaped}</textarea>
+          </div>
+          <div class="query-toggle">
+            <span class="toggle-label ${labelCls}">${labelTxt}</span>
+            <label class="toggle">
+              <input class="toggle-input" type="checkbox" data-id="${item._id}" ${checked}>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="query-actions">
+            <button class="btn-delete" data-id="${item._id}" title="Delete">✕</button>
+          </div>
+        </div>`;
+    }
+
+    /* ── Highlight search matches ──────────────────────────────── */
+    function highlightMatches(container, query) {
+      const lq = query.toLowerCase();
+      container.querySelectorAll('.query-textarea').forEach(ta => {
+        const val = ta.value.toLowerCase();
+        if (val.includes(lq)) {
+          ta.closest('.query-card').classList.add('highlight');
+        }
+      });
+    }
+
+    /* ── Auto-resize textarea ──────────────────────────────────── */
+    function autoResize(ta) {
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    }
+
+    /* ── HTML escape ───────────────────────────────────────────── */
+    function escapeHtml(text) {
+      const d = document.createElement('div');
+      d.textContent = text;
+      return d.innerHTML;
+    }
+
+    /* ── CRUD Operations ───────────────────────────────────────── */
+    function updateQuery(id, value) {
+      const item = items.find(i => i._id === id);
+      if (item) { item.query = value; markUnsaved(); }
+    }
+
+    function updateTrigger(id, value) {
+      const item = items.find(i => i._id === id);
+      if (item) { item.should_trigger = value; markUnsaved(); render(); }
+    }
+
+    function deleteRow(id) {
+      const idx = items.findIndex(i => i._id === id);
+      if (idx === -1) return;
+      deletedItem = { item: { ...items[idx] }, index: idx };
+      items.splice(idx, 1);
+      markUnsaved();
+      render();
+      showToast('Query deleted.');
+    }
+
+    function undoDelete() {
+      if (!deletedItem) return;
+      items.splice(deletedItem.index, 0, deletedItem.item);
+      deletedItem = null;
+      markUnsaved();
+      render();
+      hideToast();
+    }
+
+    function addRow() {
+      const newItem = { query: '', should_trigger: true, _id: nextId++ };
+      items.unshift(newItem);
+      markUnsaved();
+      render();
+      // Focus the new textarea
+      const first = document.querySelector('.query-textarea');
+      if (first) { first.focus(); autoResize(first); }
+    }
+
+    /* ── Filter & Search ───────────────────────────────────────── */
+    function setFilter(mode) {
+      filterMode = mode;
+      ['all','yes','no'].forEach(f => {
+        const btn = document.getElementById(`filter-${f}`);
+        btn.className = 'filter-btn' + (f === mode ? ` active-${f}` : '');
+      });
+      render();
+    }
+
+    function onSearch() {
+      searchQuery = document.getElementById('search-input').value;
+      render();
+    }
+
+    /* ── Export ────────────────────────────────────────────────── */
+    function exportEvalSet() {
+      const valid = items
+        .filter(i => i.query.trim() !== '')
+        .map(i => ({ query: i.query.trim(), should_trigger: i.should_trigger }));
+
+      const blob = new Blob([JSON.stringify(valid, null, 2)], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'eval_set.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      hasUnsaved = false;
+      document.getElementById('unsaved-dot').classList.remove('visible');
+      showToast(`Exported ${valid.length} queries.`, false);
+    }
+
+    /* ── Unsaved indicator ─────────────────────────────────────── */
+    function markUnsaved() {
+      hasUnsaved = true;
+      document.getElementById('unsaved-dot').classList.add('visible');
+    }
+
+    /* ── Toast ─────────────────────────────────────────────────── */
+    function showToast(msg, withUndo = true) {
+      clearTimeout(toastTimer);
+      document.getElementById('toast-msg').textContent = msg;
+      document.getElementById('toast-undo-btn').style.display = withUndo ? '' : 'none';
+      document.getElementById('toast').classList.add('visible');
+      toastTimer = setTimeout(hideToast, 4000);
+    }
+
+    function hideToast() {
+      document.getElementById('toast').classList.remove('visible');
+    }
+
+    /* ── Keyboard Shortcuts ────────────────────────────────────── */
+    document.addEventListener('keydown', e => {
+      const ctrl = e.ctrlKey || e.metaKey;
+      if (ctrl && e.key === 'Enter') { e.preventDefault(); addRow(); }
+      if (ctrl && e.key === 'e')     { e.preventDefault(); exportEvalSet(); }
+      if (ctrl && e.key === 'z')     { e.preventDefault(); undoDelete(); }
+      if (e.key === '/' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        document.getElementById('search-input').focus();
+      }
+    });
+
+    /* ── Init ──────────────────────────────────────────────────── */
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg:           #0e0e0f;
+      --bg2:          #161618;
+      --bg3:          #1e1e21;
+      --surface:      #242428;
+      --border:       rgba(255,255,255,0.08);
+      --border-mid:   rgba(255,255,255,0.13);
+      --text:         #e8e6e1;
+      --text-2:       #9e9b94;
+      --text-3:       #5a5852;
+      --accent:       #e8854a;
+      --accent-dim:   rgba(232,133,74,0.15);
+      --accent-hover: #f09a62;
+      --green:        #7ab87a;
+      --green-bg:     rgba(122,184,122,0.12);
+      --red:          #e06b6b;
+      --red-bg:       rgba(224,107,107,0.12);
+      --blue:         #6ba4e0;
+      --blue-bg:      rgba(107,164,224,0.12);
+      --amber:        #d4a84b;
+      --amber-bg:     rgba(212,168,75,0.12);
+      --radius:       8px;
+      --radius-lg:    12px;
+      --mono:         'DM Mono', 'SF Mono', Consolas, monospace;
+      --sans:         'DM Sans', system-ui, sans-serif;
+      --serif:        'Fraunces', Georgia, serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-mid); }
+
+    /* ═══════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════ */
+    #app {
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════ */
+    .header {
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+
+    .header-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(232,133,74,0.3);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-icon svg { width: 14px; height: 14px; color: var(--accent); }
+
+    .header-title {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+    }
+
+    .header-skill {
+      color: var(--accent);
+    }
+
+    .header-hint {
+      font-size: 0.72rem;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .progress-pip-row {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .progress-pip {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .progress-pip.visited { background: var(--text-3); border-color: var(--text-3); }
+    .progress-pip.current { background: var(--accent); border-color: var(--accent); width: 8px; height: 8px; }
+
+    .progress-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════
+       VIEW TABS
+    ═══════════════════════════════════════ */
+    .view-tabs {
+      display: none;
+      padding: 0 2rem;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      gap: 0;
+    }
+
+    .view-tab {
+      font-family: var(--sans);
+      padding: 0 1rem;
+      height: 40px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-3);
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .view-tab:hover { color: var(--text-2); }
+    .view-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ═══════════════════════════════════════
+       PANELS
+    ═══════════════════════════════════════ */
+    .view-panel { display: none; overflow: hidden; }
+    .view-panel.active { display: flex; flex-direction: column; }
+
+    /* ═══════════════════════════════════════
+       MAIN SCROLL AREA
+    ═══════════════════════════════════════ */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* ═══════════════════════════════════════
+       CARDS / SECTIONS
+    ═══════════════════════════════════════ */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      flex-shrink: 0;
+      animation: fadeSlideIn 0.2s ease both;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:nth-child(1) { animation-delay: 0.00s; }
+    .card:nth-child(2) { animation-delay: 0.04s; }
+    .card:nth-child(3) { animation-delay: 0.07s; }
+    .card:nth-child(4) { animation-delay: 0.10s; }
+    .card:nth-child(5) { animation-delay: 0.12s; }
+
+    .card-header {
+      padding: 0.625rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+      gap: 0.5rem;
+    }
+
+    .card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-3);
+    }
+
+    .card-body { padding: 1rem; }
+
+    /* ═══════════════════════════════════════
+       CONFIG BADGE
+    ═══════════════════════════════════════ */
+    .config-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .config-badge::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .config-primary {
+      background: var(--blue-bg);
+      color: var(--blue);
+    }
+    .config-primary::before { background: var(--blue); }
+
+    .config-baseline {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+    .config-baseline::before { background: var(--amber); }
+
+    /* ═══════════════════════════════════════
+       PROMPT
+    ═══════════════════════════════════════ */
+    .prompt-text {
+      font-family: var(--serif);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    /* ═══════════════════════════════════════
+       OUTPUT FILES
+    ═══════════════════════════════════════ */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .output-file + .output-file { margin-top: 0.75rem; }
+
+    .output-file-header {
+      padding: 0.5rem 0.875rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .output-file-name {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .file-type-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-text   { background: var(--text-3); }
+    .dot-image  { background: #7ab87a; }
+    .dot-pdf    { background: var(--red); }
+    .dot-xlsx   { background: var(--green); }
+    .dot-binary { background: var(--blue); }
+    .dot-error  { background: var(--red); }
+
+    .dl-btn {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-3);
+      text-decoration: none;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .dl-btn:hover {
+      color: var(--accent);
+      border-color: rgba(232,133,74,0.4);
+      background: var(--accent-dim);
+    }
+
+    .output-file-content {
+      padding: 0.875rem;
+      overflow-x: auto;
+    }
+
+    .output-file-content pre {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text-2);
+    }
+
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+    }
+
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      width: 100%;
+    }
+
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.625rem;
+      text-align: left;
+    }
+
+    .output-file-content table th {
+      background: var(--bg3);
+      font-weight: 600;
+      color: var(--text-2);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+    }
+
+    .output-file-content table tr:nth-child(even) td {
+      background: rgba(255,255,255,0.01);
+    }
+
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .output-file-content .download-link:hover {
+      background: var(--accent-dim);
+      border-color: rgba(232,133,74,0.3);
+    }
+
+    .empty-state {
+      color: var(--text-3);
+      font-size: 0.875rem;
+      text-align: center;
+      padding: 2.5rem;
+      font-style: italic;
+    }
+
+    /* ═══════════════════════════════════════
+       COLLAPSIBLE SECTIONS
+    ═══════════════════════════════════════ */
+    .collapsible-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      user-select: none;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+      text-align: left;
+    }
+
+    .collapsible-toggle:hover .card-label { color: var(--text-2); }
+
+    .chevron {
+      width: 14px; height: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+      color: var(--text-3);
+      flex-shrink: 0;
+    }
+
+    .chevron svg { width: 10px; height: 10px; }
+    .chevron.open { transform: rotate(90deg); }
+
+    .collapsible-content {
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .collapsible-content.open { display: block; }
+
+    /* ═══════════════════════════════════════
+       GRADES
+    ═══════════════════════════════════════ */
+    .grades-summary-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pass-rate-ring {
+      position: relative;
+      width: 40px; height: 40px;
+      flex-shrink: 0;
+    }
+
+    .pass-rate-ring svg { transform: rotate(-90deg); }
+
+    .pass-rate-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .grades-stat-group {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .grades-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .grades-stat-val {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .grades-stat-val.pass { color: var(--green); }
+    .grades-stat-val.fail { color: var(--red); }
+
+    .grades-stat-label {
+      font-size: 0.68rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .assertion-list { list-style: none; }
+
+    .assertion-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-item:hover { background: rgba(255,255,255,0.015); }
+
+    .assertion-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    .assertion-icon {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    .assertion-icon.pass {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .assertion-icon.fail {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .assertion-text {
+      font-size: 0.85rem;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .assertion-evidence {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      line-height: 1.5;
+      padding-left: 1.5rem;
+      font-style: italic;
+      border-left: 2px solid var(--border);
+      margin-left: 1.5rem;
+    }
+
+    /* ═══════════════════════════════════════
+       FEEDBACK
+    ═══════════════════════════════════════ */
+    .feedback-textarea {
+      width: 100%;
+      min-height: 96px;
+      padding: 0.75rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      resize: vertical;
+      color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: rgba(232,133,74,0.4);
+      box-shadow: 0 0 0 3px rgba(232,133,74,0.08);
+    }
+
+    .feedback-textarea::placeholder { color: var(--text-3); }
+
+    .feedback-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+
+    .feedback-status {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: opacity 0.3s;
+    }
+
+    .save-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulseDot 0.8s ease forwards;
+    }
+
+    @keyframes pulseDot {
+      0% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1.3); }
+      100% { opacity: 0.8; transform: scale(1); }
+    }
+
+    .prev-feedback-box {
+      margin-top: 0.75rem;
+      padding: 0.625rem 0.875rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--text-3);
+      border-radius: var(--radius);
+    }
+
+    .prev-feedback-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-3);
+      margin-bottom: 0.3rem;
+    }
+
+    .prev-feedback-text {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════
+       NAVIGATION BAR
+    ═══════════════════════════════════════ */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.875rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      font-family: var(--sans);
+      padding: 0.45rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .nav-btn svg { width: 14px; height: 14px; }
+
+    .nav-btn:hover:not(:disabled) {
+      color: var(--text);
+      border-color: var(--border-mid);
+      background: var(--bg3);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    .done-btn {
+      font-family: var(--sans);
+      padding: 0.45rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .done-btn:hover {
+      color: var(--text);
+      border-color: var(--border-mid);
+      background: var(--bg3);
+    }
+
+    .done-btn.ready {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 0 24px rgba(232,133,74,0.3);
+    }
+
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      box-shadow: 0 0 32px rgba(232,133,74,0.45);
+    }
+
+    /* ═══════════════════════════════════════
+       BENCHMARK VIEW
+    ═══════════════════════════════════════ */
+    .benchmark-view {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+    }
+
+    .benchmark-hero {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .benchmark-stat-card {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+
+    .bsc-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-3);
+      margin-bottom: 0.4rem;
+    }
+
+    .bsc-delta {
+      font-family: var(--mono);
+      font-size: 1.5rem;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .bsc-delta.pos { color: var(--green); }
+    .bsc-delta.neg { color: var(--red); }
+    .bsc-delta.neu { color: var(--text-2); }
+
+    .bsc-sub {
+      font-size: 0.75rem;
+      color: var(--text-3);
+    }
+
+    .bm-section-title {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-2);
+      margin: 1.5rem 0 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      font-size: 0.78rem;
+      width: 100%;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+
+    .benchmark-table th {
+      font-family: var(--mono);
+      background: var(--bg3);
+      color: var(--text-3);
+      font-weight: 500;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 0.625rem 0.875rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .benchmark-table td {
+      padding: 0.55rem 0.875rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-2);
+    }
+
+    .benchmark-table tbody tr:last-child td { border-bottom: none; }
+    .benchmark-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .benchmark-table tr.row-with td { color: var(--text); }
+    .benchmark-table tr.row-without td { color: var(--text-2); }
+    .benchmark-table tr.row-avg td { font-weight: 600; border-top: 1px solid var(--border-mid); }
+
+    .delta-pos { color: var(--green) !important; font-weight: 600; }
+    .delta-neg { color: var(--red) !important; font-weight: 600; }
+
+    .check-pass { color: var(--green); font-weight: 700; }
+    .check-fail { color: var(--red); font-weight: 700; }
+
+    .benchmark-notes {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+
+    .benchmark-notes h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .benchmark-notes ul { list-style: none; }
+
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--text-2);
+      padding: 0.3rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .benchmark-notes li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .benchmark-empty {
+      color: var(--text-3);
+      font-style: italic;
+      text-align: center;
+      padding: 4rem;
+    }
+
+    /* ═══════════════════════════════════════
+       DONE OVERLAY
+    ═══════════════════════════════════════ */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .done-overlay.visible { display: flex; }
+
+    .done-card {
+      background: var(--bg2);
+      border: 1px solid var(--border-mid);
+      border-radius: 16px;
+      padding: 2.5rem 3rem;
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+      animation: slideUp 0.2s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .done-icon {
+      width: 48px; height: 48px;
+      background: var(--green-bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.25rem;
+    }
+
+    .done-card h2 {
+      font-family: var(--serif);
+      font-size: 1.375rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .done-card p {
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      font-size: 0.875rem;
+    }
+
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .done-card button {
+      font-family: var(--sans);
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius);
+      background: var(--bg3);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .done-card button:hover { background: var(--surface); border-color: var(--border-mid); }
+
+    /* ═══════════════════════════════════════
+       TOAST
+    ═══════════════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--surface);
+      border: 1px solid var(--border-mid);
+      color: var(--text);
+      padding: 0.5rem 1.25rem;
+      border-radius: 100px;
+      font-size: 0.8125rem;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+
+    <!-- ─── HEADER ─────────────────────────────── -->
+    <header class="header">
+      <div class="header-left">
+        <div class="header-icon">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="5" height="5" rx="1"/>
+            <rect x="9" y="2" width="5" height="5" rx="1"/>
+            <rect x="2" y="9" width="5" height="5" rx="1"/>
+            <rect x="9" y="9" width="5" height="5" rx="1"/>
+          </svg>
+        </div>
+        <div>
+          <div class="header-title">
+            Eval Review &mdash; <span id="skill-name" class="header-skill"></span>
+          </div>
+          <div class="header-hint">← → to navigate &nbsp;·&nbsp; feedback auto-saves</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="progress-pip-row" id="progress-pips"></div>
+        <div class="progress-label" id="progress-label"></div>
+      </div>
+    </header>
+
+    <!-- ─── VIEW TABS ──────────────────────────── -->
+    <div class="view-tabs" id="view-tabs">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         OUTPUTS PANEL
+    ═══════════════════════════════════════════ -->
+    <div class="view-panel active" id="panel-outputs">
+
+      <div class="main" id="main-scroll">
+
+        <!-- Prompt -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <span class="card-label">Prompt</span>
+            </div>
+            <span id="config-badge" style="display:none;"></span>
+          </div>
+          <div class="card-body">
+            <div class="prompt-text" id="prompt-text"></div>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Output</span>
+          </div>
+          <div class="card-body" id="outputs-body">
+            <div class="empty-state">No output files</div>
+          </div>
+        </div>
+
+        <!-- Previous Output (collapsible) -->
+        <div class="card" id="prev-outputs-card" style="display:none;">
+          <div class="card-header">
+            <button class="collapsible-toggle" onclick="toggleCollapsible('prev-outputs')">
+              <span class="chevron" id="chevron-prev-outputs">
+                <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2l4 3-4 3"/></svg>
+              </span>
+              <span class="card-label">Previous Output</span>
+            </button>
+          </div>
+          <div class="collapsible-content" id="collapsible-prev-outputs"></div>
+        </div>
+
+        <!-- Grades (collapsible) -->
+        <div class="card" id="grades-card" style="display:none;">
+          <div class="card-header">
+            <button class="collapsible-toggle" onclick="toggleCollapsible('grades')">
+              <span class="chevron" id="chevron-grades">
+                <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2l4 3-4 3"/></svg>
+              </span>
+              <span class="card-label">Formal Grades</span>
+            </button>
+            <span id="grades-badge"></span>
+          </div>
+          <div class="collapsible-content" id="collapsible-grades"></div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Your Feedback</span>
+          </div>
+          <div class="card-body">
+            <textarea
+              class="feedback-textarea"
+              id="feedback"
+              placeholder="What do you think of this output? Issues, suggestions, or things that look great?"
+            ></textarea>
+            <div class="feedback-footer">
+              <div class="feedback-status" id="feedback-status"></div>
+            </div>
+            <div id="prev-feedback-box" style="display:none;">
+              <div class="prev-feedback-box">
+                <div class="prev-feedback-label">Previous iteration feedback</div>
+                <div class="prev-feedback-text" id="prev-feedback-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.main -->
+
+      <!-- NAV BAR -->
+      <nav class="nav">
+        <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+          Previous
+        </button>
+        <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+        <button class="nav-btn" id="next-btn" onclick="navigate(1)">
+          Next
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2l5 5-5 5"/></svg>
+        </button>
+      </nav>
+
+    </div><!-- /#panel-outputs -->
+
+    <!-- ═══════════════════════════════════════════
+         BENCHMARK PANEL
+    ═══════════════════════════════════════════ -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available.</div>
+      </div>
+    </div>
+
+  </div><!-- /#app -->
+
+  <!-- Done Overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <div class="done-icon">✓</div>
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Return to your Claude Code session and let Claude know you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">Back to Review</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── Embedded data (injected by generate_review.py) ──
+    /*__EMBEDDED_DATA__*/
+
+    // ── State ──
+    let feedbackMap  = {};
+    let currentIndex = 0;
+    let visitedRuns  = new Set();
+
+    // ── Init ──────────────────────────────────────────
+    async function init() {
+      const hasPrevious =
+        Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0 ||
+        Object.keys(EMBEDDED_DATA.previous_outputs  || {}).length > 0;
+
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+
+      buildProgressPips();
+      showRun(0);
+
+      // Auto-save feedback
+      let saveTimeout = null;
+      document.getElementById("feedback").addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        setFeedbackStatus("typing");
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ── Progress Pips ─────────────────────────────────
+    function buildProgressPips() {
+      const row = document.getElementById("progress-pips");
+      const n   = EMBEDDED_DATA.runs.length;
+      if (n > 20) { row.style.display = "none"; return; }
+      for (let i = 0; i < n; i++) {
+        const pip = document.createElement("div");
+        pip.className = "progress-pip";
+        pip.id = "pip-" + i;
+        pip.title = "Run " + (i + 1);
+        pip.style.cursor = "pointer";
+        pip.onclick = (function(idx){ return () => { saveCurrentFeedback(); showRun(idx); }; })(i);
+        row.appendChild(pip);
+      }
+    }
+
+    function updatePips() {
+      const n = EMBEDDED_DATA.runs.length;
+      for (let i = 0; i < n; i++) {
+        const pip = document.getElementById("pip-" + i);
+        if (!pip) continue;
+        pip.className = "progress-pip" +
+          (i === currentIndex ? " current" : visitedRuns.has(i) ? " visited" : "");
+      }
+    }
+
+    // ── Navigation ────────────────────────────────────
+    function navigate(delta) {
+      const next = currentIndex + delta;
+      if (next >= 0 && next < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(next);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled = currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ── Show Run ──────────────────────────────────────
+    function showRun(index) {
+      currentIndex = index;
+      const run    = EMBEDDED_DATA.runs[index];
+
+      document.getElementById("progress-label").textContent =
+        (index + 1) + " / " + EMBEDDED_DATA.runs.length;
+
+      // Prompt + config badge
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      const badge = document.getElementById("config-badge");
+      const m     = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (m) {
+        const isBaseline = m[1] === "without_skill" || m[1] === "old_skill";
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.textContent = m[1].replace(/_/g, " ");
+        badge.style.display = "inline-flex";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs / Grades / Prev outputs
+      renderOutputs(run);
+      renderGrades(run);
+      renderPrevOutputs(run);
+
+      // Prev feedback
+      const prevFb   = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevBox  = document.getElementById("prev-feedback-box");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevBox.style.display = "block";
+      } else {
+        prevBox.style.display = "none";
+      }
+
+      // Current feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      setFeedbackStatus("");
+
+      updateNavButtons();
+      updatePips();
+
+      visitedRuns.add(index);
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        document.getElementById("done-btn").classList.add("ready");
+      }
+
+      document.getElementById("main-scroll").scrollTop = 0;
+    }
+
+    // ── Render Outputs ────────────────────────────────
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+      const outputs = run.outputs || [];
+      if (!outputs.length) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+      for (const file of outputs) container.appendChild(buildFileEl(file));
+    }
+
+    function buildFileEl(file) {
+      const wrap = document.createElement("div");
+      wrap.className = "output-file";
+
+      // Header
+      const header = document.createElement("div");
+      header.className = "output-file-header";
+
+      const dotClass = { text:"dot-text", image:"dot-image", pdf:"dot-pdf",
+                         xlsx:"dot-xlsx", binary:"dot-binary", error:"dot-error" }[file.type] || "dot-text";
+      const nameEl   = document.createElement("div");
+      nameEl.className = "output-file-name";
+      nameEl.innerHTML = `<span class="file-type-dot ${dotClass}"></span>${escapeHtml(file.name)}`;
+      header.appendChild(nameEl);
+
+      const dlBtn  = document.createElement("a");
+      dlBtn.className = "dl-btn";
+      dlBtn.textContent = "↓ Download";
+      dlBtn.download = file.name;
+      dlBtn.href = getDownloadUri(file);
+      header.appendChild(dlBtn);
+      wrap.appendChild(header);
+
+      // Content
+      const content = document.createElement("div");
+      content.className = "output-file-content";
+
+      if (file.type === "text") {
+        const pre = document.createElement("pre");
+        pre.textContent = file.content;
+        content.appendChild(pre);
+      } else if (file.type === "image") {
+        const img = document.createElement("img");
+        img.src = file.data_uri;
+        img.alt = file.name;
+        content.appendChild(img);
+      } else if (file.type === "pdf") {
+        const iframe = document.createElement("iframe");
+        iframe.src = file.data_uri;
+        content.appendChild(iframe);
+      } else if (file.type === "xlsx") {
+        renderXlsx(content, file.data_b64);
+      } else if (file.type === "binary") {
+        const a = document.createElement("a");
+        a.className = "download-link";
+        a.href = file.data_uri;
+        a.download = file.name;
+        a.textContent = "Download " + file.name;
+        content.appendChild(a);
+      } else if (file.type === "error") {
+        const pre = document.createElement("pre");
+        pre.textContent = file.content;
+        pre.style.color = "var(--red)";
+        content.appendChild(pre);
+      }
+
+      wrap.appendChild(content);
+      return wrap;
+    }
+
+    // ── XLSX ──────────────────────────────────────────
+    function renderXlsx(container, b64) {
+      try {
+        const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        const wb  = XLSX.read(raw, { type: "array" });
+        for (const name of wb.SheetNames) {
+          if (wb.SheetNames.length > 1) {
+            const lbl = document.createElement("div");
+            lbl.style.cssText = "font-family:var(--mono);font-size:0.7rem;color:var(--text-3);margin:0.5rem 0 0.25rem;text-transform:uppercase;letter-spacing:0.06em;";
+            lbl.textContent = name;
+            container.appendChild(lbl);
+          }
+          const wr = document.createElement("div");
+          wr.innerHTML = XLSX.utils.sheet_to_html(wb.Sheets[name], { editable: false });
+          container.appendChild(wr);
+        }
+      } catch (e) {
+        container.textContent = "Error rendering spreadsheet: " + e.message;
+      }
+    }
+
+    // ── Render Grades ─────────────────────────────────
+    function renderGrades(run) {
+      const card    = document.getElementById("grades-card");
+      const content = document.getElementById("collapsible-grades");
+
+      if (!run.grading) { card.style.display = "none"; return; }
+      card.style.display = "block";
+
+      // Reset collapsed
+      content.classList.remove("open");
+      document.getElementById("chevron-grades").classList.remove("open");
+
+      const g            = run.grading;
+      const summary      = g.summary || {};
+      const expectations = g.expectations || [];
+      const rate         = summary.pass_rate ?? 0;
+      const pct          = Math.round(rate * 100);
+
+      // Update badge in header
+      const badge = document.getElementById("grades-badge");
+      const col   = rate >= 0.8 ? "var(--green)" : rate >= 0.5 ? "var(--amber)" : "var(--red)";
+      badge.innerHTML = `<span style="font-family:var(--mono);font-size:0.72rem;color:${col};font-weight:600;">${pct}%</span>`;
+
+      // Summary bar
+      const circumference = 2 * Math.PI * 16;
+      const dash          = (rate * circumference).toFixed(2);
+      const gap           = circumference.toFixed(2);
+      const ringColor     = rate >= 0.8 ? "#7ab87a" : rate >= 0.5 ? "#d4a84b" : "#e06b6b";
+
+      let html = `
+        <div class="grades-summary-bar">
+          <div class="pass-rate-ring">
+            <svg viewBox="0 0 36 36" width="40" height="40">
+              <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/>
+              <circle cx="18" cy="18" r="16" fill="none" stroke="${ringColor}" stroke-width="3"
+                stroke-dasharray="${dash} ${gap}" stroke-linecap="round"/>
+            </svg>
+            <div class="pass-rate-text">${pct}%</div>
+          </div>
+          <div class="grades-stat-group">
+            <div class="grades-stat">
+              <div class="grades-stat-val pass">${summary.passed ?? 0}</div>
+              <div class="grades-stat-label">Passed</div>
+            </div>
+            <div class="grades-stat">
+              <div class="grades-stat-val fail">${summary.failed ?? 0}</div>
+              <div class="grades-stat-label">Failed</div>
+            </div>
+            <div class="grades-stat">
+              <div class="grades-stat-val" style="color:var(--text-2)">${summary.total ?? 0}</div>
+              <div class="grades-stat-label">Total</div>
+            </div>
+          </div>
+        </div>
+        <ul class="assertion-list">`;
+
+      for (const exp of expectations) {
+        const cls  = exp.passed ? "pass" : "fail";
+        const icon = exp.passed ? "✓" : "✗";
+        html += `
+          <li class="assertion-item">
+            <div class="assertion-row">
+              <div class="assertion-icon ${cls}">${icon}</div>
+              <div class="assertion-text">${escapeHtml(exp.text)}</div>
+            </div>
+            ${exp.evidence ? `<div class="assertion-evidence">${escapeHtml(exp.evidence)}</div>` : ""}
+          </li>`;
+      }
+
+      html += "</ul>";
+      content.innerHTML = html;
+    }
+
+    // ── Render Prev Outputs ───────────────────────────
+    function renderPrevOutputs(run) {
+      const card    = document.getElementById("prev-outputs-card");
+      const content = document.getElementById("collapsible-prev-outputs");
+      const prev    = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prev || !prev.length) { card.style.display = "none"; return; }
+      card.style.display = "block";
+
+      content.classList.remove("open");
+      document.getElementById("chevron-prev-outputs").classList.remove("open");
+
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "0.875rem";
+      for (const file of prev) wrapper.appendChild(buildFileEl(file));
+      content.appendChild(wrapper);
+    }
+
+    // ── Collapsible ───────────────────────────────────
+    function toggleCollapsible(id) {
+      document.getElementById("collapsible-" + id).classList.toggle("open");
+      document.getElementById("chevron-" + id).classList.toggle("open");
+    }
+
+    // ── Feedback ─────────────────────────────────────
+    function setFeedbackStatus(state) {
+      const el = document.getElementById("feedback-status");
+      if (state === "typing") {
+        el.innerHTML = `<span style="color:var(--text-3)">Editing…</span>`;
+      } else if (state === "saved") {
+        el.innerHTML = `<span class="save-dot"></span><span style="color:var(--text-3)">Saved</span>`;
+      } else {
+        el.innerHTML = "";
+      }
+    }
+
+    function saveCurrentFeedback() {
+      const run  = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim()) feedbackMap[run.id] = text;
+      else delete feedbackMap[run.id];
+
+      const reviews = Object.entries(feedbackMap)
+        .filter(([, v]) => v.trim())
+        .map(([run_id, feedback]) => ({ run_id, feedback, timestamp: new Date().toISOString() }));
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => setFeedbackStatus("saved"))
+        .catch(() => setFeedbackStatus("saved"));
+    }
+
+    // ── Done ──────────────────────────────────────────
+    function showDoneDialog() {
+      const run  = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim()) feedbackMap[run.id] = text;
+      else delete feedbackMap[run.id];
+
+      const ts      = new Date().toISOString();
+      const reviews = EMBEDDED_DATA.runs.map(r => ({
+        run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts
+      }));
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        const blob = new Blob([payload], { type: "application/json" });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href = url; a.download = "feedback.json"; a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ── View switching ────────────────────────────────
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ── Benchmark ─────────────────────────────────────
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary   = data.run_summary || {};
+      const metadata  = data.metadata    || {};
+      const notes     = data.notes       || [];
+      const runs      = data.runs        || [];
+      const delta     = summary.delta    || {};
+
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const cfgA    = configs[0] || "with_skill";
+      const cfgB    = configs[1] || "without_skill";
+      const a       = summary[cfgA] || {};
+      const b       = summary[cfgB] || {};
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const m = pct ? (stat.mean * 100).toFixed(0) + "%" : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) + "%" : stat.stddev.toFixed(1);
+        return m + " <span style='color:var(--text-3)'>± " + s + "</span>";
+      }
+
+      function deltaClass(v) {
+        const n = parseFloat(v);
+        if (n > 0) return "delta-pos";
+        if (n < 0) return "delta-neg";
+        return "";
+      }
+
+      // Hero stat cards
+      const deltaRate  = delta.pass_rate  || "—";
+      const deltaTime  = delta.time_seconds ? delta.time_seconds + "s" : "—";
+      const deltaToken = delta.tokens      || "—";
+
+      function heroClass(v) {
+        const n = parseFloat(v);
+        return n > 0 ? "pos" : n < 0 ? "neg" : "neu";
+      }
+
+      let html = `
+        <div class="bm-section-title" style="margin-top:0;">
+          ${metadata.skill_name ? escapeHtml(metadata.skill_name) + " &mdash; " : ""}
+          ${metadata.timestamp || ""}
+          ${metadata.evals_run ? " &mdash; evals: " + metadata.evals_run.join(", ") : ""}
+          ${metadata.runs_per_configuration ? " &mdash; " + metadata.runs_per_configuration + " runs/config" : ""}
+        </div>
+
+        <div class="benchmark-hero">
+          <div class="benchmark-stat-card">
+            <div class="bsc-label">Pass Rate Delta</div>
+            <div class="bsc-delta ${heroClass(deltaRate)}">${deltaRate}</div>
+            <div class="bsc-sub">
+              ${cfgA.replace(/_/g," ")}: ${a.pass_rate ? (a.pass_rate.mean*100).toFixed(0)+"%" : "—"}
+              &nbsp;→&nbsp;
+              ${cfgB.replace(/_/g," ")}: ${b.pass_rate ? (b.pass_rate.mean*100).toFixed(0)+"%" : "—"}
+            </div>
+          </div>
+          <div class="benchmark-stat-card">
+            <div class="bsc-label">Time Delta</div>
+            <div class="bsc-delta ${heroClass(delta.time_seconds || 0)}">${deltaTime}</div>
+            <div class="bsc-sub">avg per run</div>
+          </div>
+          <div class="benchmark-stat-card">
+            <div class="bsc-label">Token Delta</div>
+            <div class="bsc-delta ${heroClass(delta.tokens || 0)}">${deltaToken}</div>
+            <div class="bsc-sub">avg per run</div>
+          </div>
+        </div>
+
+        <div class="bm-section-title">Summary</div>
+        <table class="benchmark-table">
+          <thead><tr>
+            <th>Metric</th>
+            <th>${escapeHtml(cfgA.replace(/_/g," "))}</th>
+            <th>${escapeHtml(cfgB.replace(/_/g," "))}</th>
+            <th>Delta</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>Pass rate</td>
+              <td>${fmtStat(a.pass_rate, true)}</td>
+              <td>${fmtStat(b.pass_rate, true)}</td>
+              <td class="${deltaClass(delta.pass_rate)}">${delta.pass_rate || "—"}</td>
+            </tr>
+            ${a.time_seconds || b.time_seconds ? `<tr>
+              <td>Time (s)</td>
+              <td>${fmtStat(a.time_seconds, false)}</td>
+              <td>${fmtStat(b.time_seconds, false)}</td>
+              <td class="${deltaClass(delta.time_seconds)}">${delta.time_seconds ? delta.time_seconds+"s" : "—"}</td>
+            </tr>` : ""}
+            ${a.tokens || b.tokens ? `<tr>
+              <td>Tokens</td>
+              <td>${fmtStat(a.tokens, false)}</td>
+              <td>${fmtStat(b.tokens, false)}</td>
+              <td class="${deltaClass(delta.tokens)}">${delta.tokens || "—"}</td>
+            </tr>` : ""}
+          </tbody>
+        </table>`;
+
+      // Per-eval breakdown
+      if (runs.length) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a,b) => a-b);
+        const hasTime   = runs.some(r => r.result?.time_seconds != null);
+        const hasErrors = runs.some(r => r.result?.errors > 0);
+
+        html += `<div class="bm-section-title">Per-Eval Breakdown</div>`;
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0]?.eval_name || "Eval " + evalId;
+          const cfgs     = [...new Set(evalRuns.map(r => r.configuration))];
+
+          html += `<div style="font-size:0.8rem;font-weight:600;color:var(--text-2);margin:1rem 0 0.5rem;">${escapeHtml(evalName)}</div>`;
+          html += `<table class="benchmark-table"><thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>`;
+          if (hasTime)   html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Errors</th>";
+          html += "</tr></thead><tbody>";
+
+          for (let ci = 0; ci < cfgs.length; ci++) {
+            const cfg      = cfgs[ci];
+            const cfgRuns  = evalRuns.filter(r => r.configuration === cfg);
+            const rowClass = ci === 0 ? "row-with" : "row-without";
+            const cfgLabel = cfg.replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+
+            for (const run of cfgRuns) {
+              const r = run.result || {};
+              const prCls = r.pass_rate >= 0.8 ? "delta-pos" : r.pass_rate < 0.5 ? "delta-neg" : "";
+              html += `<tr class="${rowClass}">
+                <td>${cfgLabel}</td><td>${run.run_number}</td>
+                <td class="${prCls}">${((r.pass_rate||0)*100).toFixed(0)}% (${r.passed||0}/${r.total||0})</td>`;
+              if (hasTime)   html += `<td>${r.time_seconds != null ? r.time_seconds.toFixed(1) : "—"}</td>`;
+              if (hasErrors) html += `<td>${r.errors||0}</td>`;
+              html += "</tr>";
+            }
+
+            const rates  = cfgRuns.map(r=>(r.result?.pass_rate||0));
+            const avg    = rates.reduce((a,b)=>a+b,0)/rates.length;
+            const avgCls = avg >= 0.8 ? "delta-pos" : avg < 0.5 ? "delta-neg" : "";
+            html += `<tr class="row-avg ${rowClass}">
+              <td>${cfgLabel}</td><td>Avg</td>
+              <td class="${avgCls}">${(avg*100).toFixed(0)}%</td>`;
+            if (hasTime) {
+              const ts = cfgRuns.map(r=>r.result?.time_seconds).filter(t=>t!=null);
+              html += `<td>${ts.length ? (ts.reduce((a,b)=>a+b,0)/ts.length).toFixed(1) : "—"}</td>`;
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Assertion detail
+          const runsWithExp = {};
+          for (const cfg of cfgs) runsWithExp[cfg] = evalRuns.filter(r => r.configuration===cfg && r.expectations?.length);
+          if (Object.values(runsWithExp).some(r=>r.length)) {
+            const seen = new Set(), allA = [];
+            for (const cfg of cfgs) for (const run of runsWithExp[cfg]) for (const e of (run.expectations||[])) if (!seen.has(e.text)) { seen.add(e.text); allA.push(e.text); }
+            html += `<table class="benchmark-table" style="margin-top:0.5rem;"><thead><tr><th>Assertion</th>`;
+            for (const cfg of cfgs) html += `<th>${escapeHtml(cfg.replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase()))}</th>`;
+            html += "</tr></thead><tbody>";
+            for (const aText of allA) {
+              html += `<tr><td>${escapeHtml(aText)}</td>`;
+              for (const cfg of cfgs) {
+                html += "<td>";
+                for (const run of runsWithExp[cfg]) {
+                  const e = (run.expectations||[]).find(e=>e.text===aText);
+                  if (e) html += `<span class="${e.passed?"check-pass":"check-fail"}" title="Run ${run.run_number}: ${escapeHtml(e.evidence||"")}">${e.passed?"✓":"✗"}</span> `;
+                  else html += "— ";
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length) {
+        html += `<div class="bm-section-title">Analysis Notes</div>
+          <div class="benchmark-notes"><ul>`;
+        for (const note of notes) html += `<li>${escapeHtml(note)}</li>`;
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ── Keyboard navigation ───────────────────────────
+    document.addEventListener("keydown", e => {
+      if (e.target.tagName === "TEXTAREA") return;
+      if (e.key === "ArrowLeft"  || e.key === "ArrowUp")   { e.preventDefault(); navigate(-1); }
+      if (e.key === "ArrowRight" || e.key === "ArrowDown")  { e.preventDefault(); navigate(1); }
+    });
+
+    // ── Utilities ─────────────────────────────────────
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const d = document.createElement("div");
+      d.textContent = text;
+      return d.innerHTML;
+    }
+
+    function showToast(message) {
+      const t = document.getElementById("toast");
+      t.textContent = message;
+      t.classList.add("visible");
+      setTimeout(() => t.classList.remove("visible"), 2000);
+    }
+
+    // ── Boot ──────────────────────────────────────────
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

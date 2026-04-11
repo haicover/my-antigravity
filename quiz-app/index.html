@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elite Tech Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background elements -->
+  <div class="ambient ambient-1"></div>
+  <div class="ambient ambient-2"></div>
+  <div class="ambient ambient-3"></div>
+
+  <main class="app-container">
+    
+    <!-- Screen 1: Start -->
+    <section id="startScreen" class="screen active">
+      <div class="start-content">
+        <h1 class="glow-text">Elite Tech Quiz</h1>
+        <p class="subtitle">Test your Knowledge. Defy the Limits.</p>
+        
+        <div class="rules-card">
+          <ul>
+            <li><strong>10</strong> Multiple-choice questions</li>
+            <li><strong>60s</strong> Timer per question</li>
+            <li><strong>+1 Score</strong> for correct answers</li>
+            <li><strong>-1 Score</strong> if time runs out</li>
+          </ul>
+        </div>
+        
+        <button id="btnStart" class="btn-primary">
+          <span>Start Challenge</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Screen 2: Quiz -->
+    <section id="quizScreen" class="screen">
+      <header class="quiz-header">
+        <div class="status-badge">
+          <span class="label">Question</span>
+          <span id="questionCount" class="value">1 / 10</span>
+        </div>
+        <div class="status-badge score-badge">
+          <span class="label">Score</span>
+          <span id="scoreDisplay" class="value">0</span>
+        </div>
+      </header>
+
+      <div class="timer-container">
+        <div class="timer-bar" id="timerBar"></div>
+        <div class="timer-text" id="timerText">60s</div>
+      </div>
+
+      <div class="question-card">
+        <h2 id="questionText">Question goes here?</h2>
+      </div>
+
+      <div class="options-grid" id="optionsContainer">
+        <!-- Buttons injected by JS -->
+      </div>
+    </section>
+
+    <!-- Screen 3: Result -->
+    <section id="resultScreen" class="screen">
+      <div class="result-content">
+        <h2 class="result-title">Challenge Complete</h2>
+        
+        <div class="score-circle">
+          <svg class="score-ring" width="160" height="160">
+            <circle class="ring-bg" cx="80" cy="80" r="70" />
+            <circle class="ring-progress" id="scoreRing" cx="80" cy="80" r="70" />
+          </svg>
+          <div class="score-inner">
+            <span id="finalScore" class="score-number">0</span>
+            <span class="score-label">Points</span>
+          </div>
+        </div>
+
+        <p id="resultMessage" class="result-message">Great job! You are an elite developer.</p>
+
+        <div class="result-actions">
+           <button id="btnPlayAgain" class="btn-primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Play Again</span>
+           </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

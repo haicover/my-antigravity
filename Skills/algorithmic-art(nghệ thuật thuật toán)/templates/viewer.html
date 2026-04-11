@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Algorithmic Art Viewer 2026</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0a0a0c;
+            --sidebar-bg: rgba(18, 18, 22, 0.85);
+            --accent-glow: #6366f1;
+            --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* --- Sidebar Layout --- */
+        #sidebar {
+            width: 380px;
+            height: 100%;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        header {
+            margin-bottom: 32px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* --- Control Groups --- */
+        .control-group {
+            margin-bottom: 28px;
+        }
+
+        .control-group h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .control-group h3::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+            margin-left: 12px;
+        }
+
+        /* --- Parameter Controls --- */
+        .param-row {
+            margin-bottom: 16px;
+        }
+
+        .param-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .param-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-glow);
+            font-size: 0.8rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: #2d2d35;
+            border-radius: 2px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+        }
+
+        /* --- Seed Navigator --- */
+        .seed-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .seed-display-area {
+            text-align: center;
+            padding: 8px;
+        }
+
+        #seed-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .seed-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        button.primary {
+            background: var(--accent-glow);
+            border-color: transparent;
+            font-weight: 600;
+            grid-column: span 2;
+        }
+
+        button.primary:hover {
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* --- Canvas Area --- */
+        #main-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 50% 50%, #1a1a20 0%, #0a0a0c 100%);
+        }
+
+        #canvas-wrapper {
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+            line-height: 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* --- Education Overlay (The "Mentor") --- */
+        #mentor-overlay {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            width: 320px;
+            background: rgba(18, 18, 22, 0.9);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-dim);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        #mentor-overlay.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mentor-tag {
+            background: var(--accent-glow);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        /* --- Utility Classes --- */
+        .mt-auto { margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <header>
+            <h1>Algorithmic Artist</h1>
+            <p>Tương lai của nghệ thuật là toán học.</p>
+        </header>
+
+        <!-- SEED CONTROL -->
+        <section class="control-group">
+            <h3>Seeded Randomness</h3>
+            <div class="seed-box">
+                <div class="seed-display-area">
+                    <span id="seed-display">12345</span>
+                </div>
+                <div class="seed-actions">
+                    <button onclick="prevSeed()">Previous</button>
+                    <button onclick="nextSeed()">Next</button>
+                    <button class="primary" onclick="randomizeSeed()">Randomize New Seed</button>
+                </div>
+                <div style="margin-top: 8px;">
+                    <button onclick="exportImage()" style="width: 100%; color: #a5b4fc; border-color: #4338ca;">
+                        Export Studio Quality (PNG)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARAMETERS -->
+        <section class="control-group">
+            <h3>Algorithm Knobs</h3>
+            
+            <div class="param-row">
+                <div class="param-label">
+                    <span>Complexity</span>
+                    <span class="param-value" id="complexity-value">500</span>
+                </div>
+                <input type="range" id="complexity" min="100" max="5000" step="100" value="500" oninput="updateParam('complexity', this.value)">
+            </div>
+
+            <div class="param-row">
+                <div class="param-label">
+                    <span>Flow Scale</span>
+                    <span class="param-value" id="flowScale-value">0.003</span>
+                </div>
+                <input type="range" id="flowScale" min="0.001" max="0.01" step="0.0001" value="0.003" oninput="updateParam('flowScale', this.value)">
+            </div>
+
+            <div class="param-row">
+                <div class="param-label">
+                    <span>Fluidity</span>
+                    <span class="param-value" id="speed-value">2.0</span>
+                </div>
+                <input type="range" id="speed" min="0.1" max="10" step="0.1" value="2.0" oninput="updateParam('speed', this.value)">
+            </div>
+        </section>
+
+        <!-- BOTTOM TIPS -->
+        <section class="control-group mt-auto">
+            <h3>Elite Mentoring</h3>
+            <p style="font-size: 0.8rem; color: var(--text-dim);">
+                Hover vào các thông số để xem giải thích thuật toán từ Cố vấn Elite.
+            </p>
+        </section>
+    </aside>
+
+    <!-- MAIN VIEWER -->
+    <main id="main-container">
+        <div id="canvas-wrapper">
+            <!-- p5.js canvas will go here -->
+        </div>
+
+        <!-- MENTOR OVERLAY -->
+        <div id="mentor-overlay">
+            <span class="mentor-tag">ELITE TIPS</span>
+            <p id="mentor-text">Di chuyển chuột qua các núm vặn để hiểu triết lý đằng sau thuật toán này.</p>
+        </div>
+    </main>
+
+    <!-- Logic Bridge -->
+    <script src="generator_template.js"></script>
+    
+    <script>
+        // --- UI <-> JS Communication ---
+        
+        // Handle Hover for Mentor Overlay
+        const helpMap = {
+            'complexity': 'Số lượng particles hoặc iterations. Cao hơn → Chi tiết hơn nhưng tốn tài nguyên.',
+            'flowScale': 'Độ zoom của noise field. Nhỏ hơn → Các đường cong rộng và mượt. Lớn hơn → Rối rắm hơn.',
+            'speed': 'Tốc độ dịch chuyển của agents trong không gian vector.',
+            'seed-display': 'Cùng một số Seed sẽ LUÔN cho ra một tác phẩm giống hệt nhau. Đây là chuẩn mực nghệ thuật NFT.'
+        };
+
+        const overlay = document.getElementById('mentor-overlay');
+        const overlayText = document.getElementById('mentor-text');
+
+        document.querySelectorAll('input, button, #seed-display').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                const text = helpMap[el.id] || helpMap[el.closest('.param-row')?.querySelector('input')?.id];
+                if (text) {
+                    overlayText.textContent = text;
+                    overlay.classList.add('visible');
+                }
+            });
+            el.addEventListener('mouseleave', () => {
+                overlay.classList.remove('visible');
+            });
+        });
+
+        // P5.js initialization integration
+        window.addEventListener('load', () => {
+            // Ensure UI is synced with default JS params
+            syncUIToParams();
+        });
+    </script>
+</body>
+</html>

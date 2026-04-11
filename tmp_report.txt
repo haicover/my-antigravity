@@ -1,0 +1,31 @@
+AI Agents(Kỹ sư AI Agents): 12 ref files, 0 script files, 0 others
+AI Engineer(Kỹ sư AI): 1 ref files, 0 script files, 0 others
+algorithmic-art(nghệ thuật thuật toán): 0 ref files, 0 script files, 1 others
+Android Developer(Nhà phát triển Android): 1 ref files, 0 script files, 0 others
+Antigravity Optimization(Tối ưu hóa Antigravity): 0 ref files, 0 script files, 0 others
+Antigravity Optimization(Tối ưu hóa): 0 ref files, 0 script files, 0 others
+Backend Developer(Nhà phát triển Backend): 1 ref files, 0 script files, 0 others
+brand-guidelines(hướng dẫn thương hiệu): 0 ref files, 0 script files, 1 others
+canvas-design(thiết kế canvas): 0 ref files, 0 script files, 1 others
+Code Review(Đánh giá mã nguồn): 1 ref files, 0 script files, 0 others
+Design System(Hệ thống thiết kế): 1 ref files, 0 script files, 0 others
+doc-coauthoring(đồng tác giả tài liệu): 0 ref files, 0 script files, 0 others
+Engineering Manager(Quản lý kỹ thuật): 10 ref files, 0 script files, 0 others
+Frontend Developer(Nhà phát triển Frontend): 1 ref files, 0 script files, 0 others
+FullStack Developer(Nhà phát triển FullStack): 1 ref files, 0 script files, 0 others
+Google AI Studio(Trung tâm sáng tạo AI): 1 ref files, 0 script files, 0 others
+Google Gemini(Hệ sinh thái Google AI): 1 ref files, 0 script files, 0 others
+internal-comms(truyền thông nội bộ): 0 ref files, 0 script files, 1 others
+iOS Developer(Nhà phát triển iOS): 1 ref files, 0 script files, 0 others
+Java Developer(Lập trình Java): 11 ref files, 0 script files, 0 others
+mcp-builder(giao thức ngữ cảnh mô hình thợ xây): 0 ref files, 4 script files, 1 others
+Product Manager(Quản lý sản phẩm): 12 ref files, 0 script files, 0 others
+Prompt Engineering(Kỹ sư Prompt): 9 ref files, 0 script files, 0 others
+skill-creator(người tạo kỹ năng): 1 ref files, 10 script files, 1 others
+slack-gif-creator(công cụ tạo ảnh GIF Slack): 0 ref files, 0 script files, 2 others
+Spring Boot(Lập trình Spring Boot): 9 ref files, 0 script files, 0 others
+SQL Roadmap(Lộ trình SQL): 11 ref files, 0 script files, 0 others
+theme-factory(nhà máy chủ đề): 0 ref files, 0 script files, 0 others
+UX Design(Thiết kế UX): 1 ref files, 0 script files, 0 others
+Vibe Coding(Lập trình phong cách Vibe): 8 ref files, 0 script files, 0 others
+web-artifacts-builder(trình tạo hiện vật web): 0 ref files, 3 script files, 1 others
