@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elite Weather</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-sunny">
+
+  <div class="ambient-background"></div>
+
+  <main class="app-container">
+    
+    <!-- Header / Search Bar -->
+    <header class="header">
+      <div class="search-box">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" placeholder="Search for a city..." autocomplete="off">
+        <button id="locationBtn" class="location-btn" aria-label="Use current location">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+        </button>
+      </div>
+      <div id="searchSuggestions" class="suggestions-dropdown hidden"></div>
+    </header>
+
+    <!-- State Modals/Loaders -->
+    <div id="loadingState" class="state-container hidden">
+      <div class="spinner"></div>
+      <p>Fetching forecast...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="weatherContent" class="weather-content">
+      
+      <!-- Current Weather -->
+      <section class="current-weather glass-panel">
+        <div class="current-header">
+          <h1 id="cityName">--</h1>
+          <p id="currentDate">--</p>
+        </div>
+        
+        <div class="current-main">
+          <div class="current-icon-wrapper" id="currentIcon">
+            <!-- SVG injected via JS -->
+          </div>
+          <div class="temperature-wrapper">
+            <span id="currentTemp" class="temperature">--</span><span class="degree">°C</span>
+          </div>
+        </div>
+
+        <div class="current-description">
+          <h2 id="weatherDescription">--</h2>
+          <p>H: <span id="tempHigh">--</span>°  L: <span id="tempLow">--</span>°</p>
+        </div>
+      </section>
+
+      <!-- Details Grid -->
+      <section class="details-grid">
+        <div class="detail-card glass-panel">
+          <div class="detail-icon">💧</div>
+          <div class="detail-info">
+            <p class="detail-label">Humidity</p>
+            <p class="detail-value" id="humidity">--%</p>
+          </div>
+        </div>
+        <div class="detail-card glass-panel">
+          <div class="detail-icon">💨</div>
+          <div class="detail-info">
+            <p class="detail-label">Wind Speed</p>
+            <p class="detail-value" id="windSpeed">-- km/h</p>
+          </div>
+        </div>
+        <div class="detail-card glass-panel">
+          <div class="detail-icon">☔</div>
+          <div class="detail-info">
+            <p class="detail-label">Rain Chance</p>
+            <p class="detail-value" id="rainChance">--%</p>
+          </div>
+        </div>
+        <div class="detail-card glass-panel">
+          <div class="detail-icon">☀️</div>
+          <div class="detail-info">
+            <p class="detail-label">UV Index</p>
+            <p class="detail-value" id="uvIndex">--</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hourly Forecast (24h) -->
+      <section class="forecast-section glass-panel">
+        <h3 class="section-title">24-Hour Forecast</h3>
+        <div class="hourly-container" id="hourlyForecast">
+          <!-- Injected via JS -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
