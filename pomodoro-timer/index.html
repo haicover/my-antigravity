@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elite Pomodoro Tracker</title>
+  <meta name="description" content="A futuristic, productivity-boosting Pomodoro Timer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-mode="work">
+
+  <!-- Ambient background -->
+  <div class="bg-blur bg-blur--1"></div>
+  <div class="bg-blur bg-blur--2"></div>
+  <div class="bg-blur bg-blur--3"></div>
+
+  <div class="app-container">
+    
+    <header class="header">
+      <div class="header__top">
+        <h1 class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Pomo Elite
+        </h1>
+        <div class="header-actions" style="display: flex; gap: 8px;">
+          <button id="btnThemeToggle" class="btn-icon" aria-label="Toggle Theme">
+            <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button id="btnSettings" class="btn-icon" aria-label="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="work">Pomodoro</button>
+        <button class="mode-tab" data-mode="shortBreak">Short Break</button>
+        <button class="mode-tab" data-mode="longBreak">Long Break</button>
+      </div>
+    </header>
+
+    <main class="timer-section">
+      <div class="timer-circle">
+        <svg class="progress-ring" width="300" height="300">
+          <circle class="progress-ring__bg" stroke="rgba(255,255,255,0.05)" stroke-width="8" fill="transparent" r="140" cx="150" cy="150"/>
+          <circle class="progress-ring__circle" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" fill="transparent" r="140" cx="150" cy="150"/>
+        </svg>
+        <div class="timer-display">
+          <div id="time" class="time">25:00</div>
+          <div id="statusText" class="status-text">Focus Time</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="btnPlayPause" class="btn-primary">
+          <svg class="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <svg class="icon-pause hidden" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          <span id="btnPlayPauseText">Start</span>
+        </button>
+        <button id="btnReset" class="btn-secondary" aria-label="Reset Timer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+      </div>
+    </main>
+
+    <footer class="stats">
+      <div class="stat-badge">
+        <span class="stat-label">Completed Sessions</span>
+        <span id="sessionCount" class="stat-value">0 / 4</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button id="btnCloseSettings" class="btn-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label>Timer Intervals (minutes)</label>
+          <div class="inputs-row">
+            <div class="input-col">
+              <label for="workTime">Pomodoro</label>
+              <input type="number" id="workTime" value="25" min="1" max="90">
+            </div>
+            <div class="input-col">
+              <label for="shortBreakTime">Short Break</label>
+              <input type="number" id="shortBreakTime" value="5" min="1" max="30">
+            </div>
+            <div class="input-col">
+              <label for="longBreakTime">Long Break</label>
+              <input type="number" id="longBreakTime" value="15" min="1" max="60">
+            </div>
+          </div>
+        </div>
+        <div class="setting-group" style="display: flex; justify-content: space-between; align-items: center;">
+          <label for="longBreakInterval" style="margin-bottom: 0;">Long Break Interval</label>
+          <input type="number" id="longBreakInterval" value="4" min="1" max="10" style="width: 80px;">
+        </div>
+        <div class="setting-group" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+          <label for="soundToggle" style="margin-bottom: 0;">Alarm Sound</label>
+          <label class="switch">
+            <input type="checkbox" id="soundToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnSaveSettings" class="btn-primary btn-full">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>
