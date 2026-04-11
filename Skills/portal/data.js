@@ -166,6 +166,39 @@ const SKILLS_DATA = [
 
   // ─── Frontend ──────────────────────────────
   {
+    name: 'Elite Quiz App',
+    nameVi: 'Ứng dụng trắc nghiệm Elite',
+    folder: 'quiz-app',
+    category: 'frontend',
+    status: 'elite',
+    version: '2.0',
+    date: '2026-04-11',
+    pillars: 'Vanilla JS, State Management, Glassmorphism',
+    description: 'A sophisticated quiz engine with dynamic timers, ambient UI, and an advanced review interface.'
+  },
+  {
+    name: 'Pomodoro Timer',
+    nameVi: 'Đồng hồ Pomodoro Vibe',
+    folder: 'pomodoro-timer',
+    category: 'frontend',
+    status: 'elite',
+    version: '1.5',
+    date: '2026-04-11',
+    pillars: 'SVG Rings, CSS Variables, Task Focusing',
+    description: 'A highly functional productivity timer featuring dynamic theme adaptation and precise countdown logic.'
+  },
+  {
+    name: 'Changelog Component',
+    nameVi: 'Thành phần Lịch sử cập nhật',
+    folder: 'changelog-component',
+    category: 'frontend',
+    status: 'elite',
+    version: '1.0',
+    date: '2026-04-11',
+    pillars: 'CSS Grid, HTML5 Semantic, Advanced Positioning',
+    description: 'A pristine timeline component to showcase app updates using high-end UI design.'
+  },
+  {
     name: 'Frontend Developer',
     nameVi: 'Nhà phát triển Frontend',
     folder: 'Frontend Developer(Nhà phát triển Frontend)',
