@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: notex-db
+    environment:
+      POSTGRES_DB: notex
+      POSTGRES_USER: notex_user
+      POSTGRES_PASSWORD: notex_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notex_user -d notex"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Ktor Backend API
+  api:
+    build: .
+    container_name: notex-api
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      DATABASE_URL: jdbc:postgresql://db:5432/notex
+      DATABASE_DRIVER: org.postgresql.Driver
+      DATABASE_USER: notex_user
+      DATABASE_PASSWORD: notex_pass
+      JWT_SECRET: change-this-in-production
+      JWT_ISSUER: notex-api
+      JWT_AUDIENCE: notex-app
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
