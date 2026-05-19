@@ -79,31 +79,75 @@ def generate_project_idea():
     
     try:
         response = requests.post(url, headers=headers, json=data)
+        if response.status_code != 200:
+            print(f"⚠️ API Response Error (Status {response.status_code}): {response.text}")
         response.raise_for_status()
         result = response.json()
         raw_text = result['candidates'][0]['content']['parts'][0]['text'].strip()
         
-        # Đảm bảo JSON sạch
+        # Làm sạch các ký tự markdown bao bọc JSON nếu có
         if raw_text.startswith("```json"):
             raw_text = raw_text.replace("```json", "", 1)
+        elif raw_text.startswith("```"):
+            raw_text = raw_text.replace("```", "", 1)
+            
         if raw_text.endswith("```"):
             raw_text = raw_text[:-3]
             
-        return json.loads(raw_text.strip())
+        parsed_data = json.loads(raw_text.strip())
+        print("✅ Đã giải mã thành công ý tưởng dự án từ Gemini!")
+        return parsed_data
     except Exception as e:
         print(f"❌ Không thể sinh ý tưởng từ Gemini: {str(e)}")
-        # Cung cấp phương án dự phòng (Fallback Project)
+        print("💡 Đang sử dụng cấu hình Dự án Doanh nghiệp nâng cao dự phòng (Fallback Project) với 6 Issues chuẩn Scrum Master...")
+        
+        # Cung cấp phương án dự phòng cực kỳ nâng cao với đầy đủ 6 Backlog Issues
         return {
             "project_name": "KmpEnterpriseSync",
             "app_title": "KMP Enterprise Offline Synchronizer",
-            "description": "Ứng dụng di động đồng bộ hóa dữ liệu ngoại tuyến nâng cao dành cho nhân sự hiện trường.",
+            "description": "Ứng dụng di động đồng bộ hóa dữ liệu ngoại tuyến nâng cao dành cho nhân sự hiện trường sử dụng Kotlin Multiplatform.",
             "tech_stack": ["Koin", "SQLDelight", "Ktor", "Compose Multiplatform"],
-            "readme_content": "# KMP Enterprise Offline Synchronizer\n\nỨng dụng Kotlin Multiplatform đa nền tảng.",
+            "readme_content": """# KMP Enterprise Offline Synchronizer 🚀
+
+Ứng dụng Kotlin Multiplatform đa nền tảng (Android & iOS) giải quyết bài toán đồng bộ hóa dữ liệu ngoại tuyến quy mô lớn cho nhân sự hiện trường.
+
+## 🏗️ Kiến trúc & Công nghệ
+- **Architecture**: MVI (Model-View-Intent) / Clean Architecture
+- **Dependency Injection**: Koin
+- **Local Caching**: SQLDelight (Offline-first)
+- **Networking**: Ktor Client with WebSockets
+- **Local Security**: SQLCipher database encryption
+""",
             "issues": [
                 {
-                    "title": "User Story: Offline-first Database Caching",
-                    "body": "As a remote worker, I want to view my cached tasks offline.",
+                    "title": "Epic: Thiết lập kiến trúc đa nền tảng Kotlin Multiplatform & Dependency Injection",
+                    "body": "### Mô tả:\nThiết lập cấu trúc dự án cơ bản và Koin module cho cả shared module, Android và iOS.\n\n### Acceptance Criteria (DoD):\n- [ ] Chia tách rõ ràng commonMain, androidMain, iosMain.\n- [ ] Cấu hình Koin để giải quyết các dependencies như Platform, NetworkClient, Database.\n- [ ] Đảm bảo ứng dụng khởi chạy thành công trên cả 2 nền tảng.",
+                    "labels": ["epic", "kotlin-kmp"]
+                },
+                {
+                    "title": "User Story: Offline-first Database Caching với SQLDelight",
+                    "body": "### Mô tả:\nAs a remote worker,\nI want my field data to be cached locally,\nSo that I can view and work with task lists even without internet connection.\n\n### Acceptance Criteria:\n- [ ] Thiết lập bảng cơ sở dữ liệu `FieldTask` sử dụng SQLDelight.\n- [ ] Cài đặt repository thực hiện logic: nếu không có mạng thì đọc từ database local.\n- [ ] Đảm bảo cơ sở dữ liệu chạy ổn định trên cả Android và iOS.",
                     "labels": ["user-story", "kotlin-kmp"]
+                },
+                {
+                    "title": "User Story: Encrypted Local Storage & Secure Token Caching",
+                    "body": "### Mô tả:\nAs a security officer,\nI want all cached data and security tokens to be encrypted locally,\nSo that unauthorized individuals cannot steal business data from the device storage.\n\n### Acceptance Criteria:\n- [ ] Sử dụng thư viện SQLCipher mã hóa cơ sở dữ liệu SQLDelight.\n- [ ] Lưu các thông tin nhạy cảm (JWT Token) vào EncryptedSharedPreferences (Android) và Keychain (iOS) qua shared API.",
+                    "labels": ["user-story", "kotlin-kmp"]
+                },
+                {
+                    "title": "User Story: Background synchronization worker & Conflict Resolution",
+                    "body": "### Mô tả:\nAs a field supervisor,\nI want my local offline changes to be automatically synced to the server in the background,\nSo that my report is updated without manual synchronization.\n\n### Acceptance Criteria:\n- [ ] Cài đặt cơ chế sync chạy nền (WorkManager trên Android & Background Tasks trên iOS).\n- [ ] Triển khai thuật toán xử lý xung đột (Last-Write-Wins hoặc Merge-Conflict-Resolution).",
+                    "labels": ["user-story", "kotlin-kmp"]
+                },
+                {
+                    "title": "User Story: Ktor Network Resilience with Retry & Timeout Policy",
+                    "body": "### Mô tả:\nAs a mobile app user,\nI want the app to gracefully handle network dropouts and auto-retry API calls,\nSo that transient network errors do not crash my workflow.\n\n### Acceptance Criteria:\n- [ ] Cấu hình Ktor Client với plugin `HttpRequestRetry`.\n- [ ] Thiết lập timeout policy (Connect timeout: 10s, Request timeout: 15s).",
+                    "labels": ["user-story", "kotlin-kmp"]
+                },
+                {
+                    "title": "Task: Viết Unit Tests kiểm thử logic xử lý đồng bộ dữ liệu",
+                    "body": "### Mô tả:\nViết các bài unit test trong `commonTest` để kiểm tra tính đúng đắn của logic hợp nhất dữ liệu ngoại tuyến và xử lý xung đột.\n\n### Acceptance Criteria:\n- [ ] Viết thành công ít nhất 3 unit tests cho lớp `SyncRepository`.\n- [ ] Đảm bảo tất cả các test cases chạy thành công trên máy ảo khi thực thi GitHub Actions.",
+                    "labels": ["automated-test", "kotlin-kmp"]
                 }
             ]
         }
