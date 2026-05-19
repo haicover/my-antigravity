@@ -1,0 +1,30 @@
+name: Autonomous Kotlin App Factory Daily Cron
+
+on:
+  schedule:
+    # Chạy tự động vào lúc 00:00 UTC (tức 07:00 AM giờ Việt Nam) hàng ngày
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Cho phép nhấn nút kích hoạt thủ công từ tab Actions trên GitHub
+
+jobs:
+  run-autonomous-agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout mã nguồn công cụ điều phối
+        uses: actions/checkout@v4
+
+      - name: Thiết lập môi trường Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Cài đặt các thư viện cần thiết
+        run: |
+          pip install requests PyGithub
+
+      - name: Thực thi AI Agent sinh dự án mới & Backlog Issues
+        env:
+          GH_PAT_TOKEN: ${{ secrets.HAICOVER_GITHUB_PAT }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python orchestrator.py
